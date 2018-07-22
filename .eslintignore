@@ -1,0 +1,6 @@
+*.json
+*.log
+*.txt
+*.md
+
+dist/
