@@ -30,6 +30,25 @@ const ReportSchema = new Schema({
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
 
+ReportSchema.statics.add = function (report) {
+  const newReport = new Report({
+    title: report.title,
+    description: report.description,
+    location: report.location,
+    long: report.long,
+    lat: report.lat,
+    tags: report.tags,
+    people: report.people,
+    properties: report.properties,
+    medias: report.medias,
+    reportCoordinates: {
+      type: 'Point',
+      coordinates: [report.long, report.lat]
+    }
+  });
+  return newReport.save();
+};
+
 const Report = mongoose.model('Report', ReportSchema);
 
 module.exports = Report;

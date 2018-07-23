@@ -13,7 +13,11 @@ reportRoute.get('/api/reports',
 
 reportRoute.post('/api/reports',
   handlers.reports.createReport.validateBody,
-  handlers.reports.createReport.logic,
+  handlers.reports.createReport.addMediasToScope,
+  handlers.reports.createReport.addPeopleToScope,
+  handlers.reports.createReport.addPropertiesToScope,
+  handlers.reports.createReport.addReportToScope,
+  handlers.reports.createReport.saveReportToDB,
   handlers.reports.createReport.respond
 );
 

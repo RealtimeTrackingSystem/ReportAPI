@@ -6,101 +6,101 @@ function validateParams (req, res, next) {
   const schema = {
     email: {
       notEmpty: true,
-      errorMessage: 'Missing Field: Email',
+      errorMessage: 'Missing Parameter: Email',
       isEmail: {
-        errorMessage: 'Invalid Field: Email'
+        errorMessage: 'Invalid Parameter: Email'
       }
     },
     password: {
       notEmpty: true,
-      errorMessage: 'Missing Field: Password',
+      errorMessage: 'Missing Parameter: Password',
       isLength: {
         options: { min: 10, max: 20 },
-        errorMessage: 'Invalid Field Length: Password'
+        errorMessage: 'Invalid Parameter Length: Password'
       }
     },
     passwordConfirmation: {
       notEmpty: true,
-      errorMessage: 'Missing Field: Password',
+      errorMessage: 'Missing Parameter: Password',
       isLength: {
         options: { min: 10, max: 20 },
-        errorMessage: 'Invalid Field Length: Password Confirmation'
+        errorMessage: 'Invalid Parameter Length: Password Confirmation'
       }
     },
     orgName: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Name'
+        errorMessage: 'Invalid Parameter Length: Organization Name'
       }
     },
     orgEmail: {
       optional: true,
       isEmail: {
-        errorMessage: 'Invalid Field: Organization Email'
+        errorMessage: 'Invalid Parameter: Organization Email'
       }
     },
     orgWebsite: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Website'
+        errorMessage: 'Invalid Parameter Length: Organization Website'
       }
     },
     orgBarangay: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Barangay'
+        errorMessage: 'Invalid Parameter Length: Organization Barangay'
       }
     },
     orgStreet: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Street'
+        errorMessage: 'Invalid Parameter Length: Organization Street'
       }
     },
     orgCity: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization City'
+        errorMessage: 'Invalid Parameter Length: Organization City'
       }
     },
     orgRegion: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Region'
+        errorMessage: 'Invalid Parameter Length: Organization Region'
       }
     },
     orgCountry: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Country'
+        errorMessage: 'Invalid Parameter Length: Organization Country'
       }
     },
     orgZip: {
       optional: true,
       isLength: {
         options: { min: 4, max: 20 },
-        errorMessage: 'Invalid Field Length: Organization Zip'
+        errorMessage: 'Invalid Parameter Length: Organization Zip'
       }
     },
     orgDescription: {
       optional: true,
       isLength: {
         options: { min: 4, max: 255 },
-        errorMessage: 'Invalid Field Length: Organization Description'
+        errorMessage: 'Invalid Parameter Length: Organization Description'
       }
     },
     orgNature: {
       optional: true,
       isLength: {
         options: { min: 4, max: 50 },
-        errorMessage: 'Invalid Field Length: Organization Nature'
+        errorMessage: 'Invalid Parameter Length: Organization Nature'
       }
     }
   };
@@ -109,7 +109,7 @@ function validateParams (req, res, next) {
     .equalPasswords(function () {
       return true;
     })
-    .withMessage('Invalid Field: Password Confirmation');
+    .withMessage('Invalid Parameter: Password Confirmation');
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
@@ -127,13 +127,13 @@ function checkDuplicateOrg (req, res, next) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Field: Organization Name or Email - Already In Use'
+          message: 'Invalid Parameter: Organization Name or Email - Already In Use'
         });
         return res.status(400).send({
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Field: Organization Name or Email - Already In Use'
+          message: 'Invalid Parameter: Organization Name or Email - Already In Use'
         });
       }
       return next();
@@ -153,13 +153,13 @@ function checkDuplicateClient (req, res, next) {
         status: 'ERROR',
         statusCode: 2,
         httpCode: 400,
-        message: 'Invalid Field: Email - Already In Use'
+        message: 'Invalid Parameter: Email - Already In Use'
       });
       return res.status(400).send({
         status: 'ERROR',
         statusCode: 2,
         httpCode: 400,
-        message: 'Invalid Field: Email - Already In Use'
+        message: 'Invalid Parameter: Email - Already In Use'
       });
     }
     return next();
