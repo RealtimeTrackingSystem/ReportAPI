@@ -1,13 +1,13 @@
-import Client from './Client';
-import ClientReport from './ClientReport';
-import Media from './Media';
-import Organization from './Organization';
-import Person from './Person';
-import Property from './Property';
-import Report from './Report';
-import Reporter from './Reporter';
+const Client = require('./Client');
+const ClientReport = require('./ClientReport');
+const Media = require('./Media');
+const Organization = require('./Organization');
+const Person = require('./Person');
+const Property = require('./Property');
+const Report = require('./Report');
+const Reporter = require('./Reporter');
 
-export default {
+module.exports = {
   Client,
   ClientReport,
   Media,

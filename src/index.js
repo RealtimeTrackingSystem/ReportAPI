@@ -1,13 +1,14 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import morgan from 'morgan';
-import logger from 'morgan';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const validator = require('express-validator');
+const morgan = require('morgan');
+const logger = require('morgan');
 
-import routes from './routes';
-import DB from './models';
-import CONFIG from './config';
-import lib from './lib';
+const routes = require('./routes');
+const DB = require('./models');
+const CONFIG = require('./config');
+const lib = require('./lib');
 
 // set up express app
 const app = express();
@@ -24,16 +25,24 @@ app.DB = DB;
 app.use(logger(config.LOG.env));
 app.use(morgan('combined'));
 
-// use body-parser middleware
+// Cors
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+
+// use body-parser middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// express-validator
+app.use(validator({
+  customValidators: lib.customValidators
+}));
+
+// adding req variables
 app.use(function (req, res, next) {
   req.logger = {};
   req.logger = lib.logger;
@@ -51,4 +60,4 @@ app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
 
-export default app;
+module.exports = app;

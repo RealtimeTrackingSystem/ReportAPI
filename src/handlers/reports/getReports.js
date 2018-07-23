@@ -10,6 +10,6 @@ function logic (req, res) {
     });
 }
 
-export default {
+module.exports = {
   logic
 };

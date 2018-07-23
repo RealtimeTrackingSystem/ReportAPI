@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
 
@@ -9,8 +9,8 @@ const PersonSchema = new Schema({
   alias: { type: String },
   isCulprit: { type: Boolean, default: false },
   isCasualty: { type: Boolean, default: true }
-}, { timestamps: true })
+}, { timestamps: true });
 
 const Person = mongoose.model('Person', PersonSchema);
 
-export default Person;
+module.exports = Person;

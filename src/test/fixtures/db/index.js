@@ -1,5 +1,5 @@
-import reports from './reports';
+const reports = require('./reports');
 
-export default {
+module.exports = {
   reports
 };

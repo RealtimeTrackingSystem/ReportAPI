@@ -1,9 +1,9 @@
 
-import { assert, expect } from 'chai';
-import sinon from 'sinon';
-import supertest from 'supertest';
-import fixtures from '../../fixtures';
-import api from '../../../index';
+const { assert, expect } = require('chai');
+const sinon = require('sinon');
+const supertest = require('supertest');
+const fixtures = require('../../fixtures');
+const api = require('../../../index');
 
 describe('GET /api/reports', function () {
   let sandbox;

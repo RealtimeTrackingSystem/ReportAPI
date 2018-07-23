@@ -1,7 +1,7 @@
 
-import { expect } from 'chai';
-import supertest from 'supertest';
-import api from '../../../index';
+const { expect } = require('chai');
+const supertest = require('supertest');
+const api = require('../../../index');
 
 describe('GET /echo', function () {
   let request;

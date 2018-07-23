@@ -6,6 +6,7 @@ Status Codes:
 2 = invalid parameters
 3 = unauthorize
 4 = unavailable content
+5 = server error
 
 Status:
 Success = SUCCESS
