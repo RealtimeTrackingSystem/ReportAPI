@@ -1,5 +1,8 @@
 const lib = require('../../lib');
+<<<<<<< HEAD
 const _ = require('lodash');
+=======
+>>>>>>> Removing babel
 function validateBody (req, res, next) {
   const schema = {
     title: {
