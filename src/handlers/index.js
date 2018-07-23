@@ -1,5 +1,7 @@
-import getReports from './getReports';
+import clients from './clients';
+import reports from './reports';
 
 export default {
-  getReports
+  clients,
+  reports
 };

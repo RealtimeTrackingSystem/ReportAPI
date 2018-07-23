@@ -1,4 +1,4 @@
-import reports from './reports';
+import * as reports from './reports';
 
 export default {
   reports

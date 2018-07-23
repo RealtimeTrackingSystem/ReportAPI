@@ -1,5 +1,11 @@
-import logger from './winston/winston';
+import crypto from './crypto';
+import customValidators from './customValidators';
+import logger from './logger';
+import errorResponses from './errorResponses';
 
 export default {
-  logger
+  crypto,
+  customValidators,
+  logger,
+  errorResponses
 };

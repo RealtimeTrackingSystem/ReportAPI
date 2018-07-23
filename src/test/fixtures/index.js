@@ -1,4 +1,4 @@
-import DB from './db';
+import * as DB from './db';
 
 export default {
   DB

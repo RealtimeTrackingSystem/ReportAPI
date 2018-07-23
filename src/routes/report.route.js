@@ -8,7 +8,13 @@ import handlers from '../handlers';
 const reportRoute = Router();
 
 reportRoute.get('/api/reports',
-  handlers.getReports.logic
+  handlers.reports.getReports.logic
+);
+
+reportRoute.post('/api/reports',
+  handlers.reports.createReport.validateBody,
+  handlers.reports.createReport.logic,
+  handlers.reports.createReport.respond
 );
 
 module.exports = reportRoute;

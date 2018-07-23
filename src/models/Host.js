@@ -15,7 +15,7 @@ const HostSchema = new Schema({
     coordinates: { type: [Number], default: [0, 0]}
   },
   street: { type: String },
-  baranggay: { type: String },
+  barangay: { type: String },
   city: { type: String },
   region: { type: String },
   country: { type: String }
