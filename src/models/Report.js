@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
 
@@ -32,4 +32,4 @@ ReportSchema.index({reportCoordinate: '2dsphere'});
 
 const Report = mongoose.model('Report', ReportSchema);
 
-export default Report;
+module.exports = Report;

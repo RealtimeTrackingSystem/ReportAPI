@@ -1,5 +1,5 @@
-import addClient from './addClient';
+const addClient = require('./addClient');
 
-export default {
+module.exports = {
   addClient
 };

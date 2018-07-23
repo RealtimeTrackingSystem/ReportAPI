@@ -1,9 +1,9 @@
-import crypto from './crypto';
-import customValidators from './customValidators';
-import logger from './logger';
-import errorResponses from './errorResponses';
+const crypto = require('./crypto');
+const customValidators = require('./customValidators');
+const logger = require('./logger');
+const errorResponses = require('./errorResponses');
 
-export default {
+module.exports = {
   crypto,
   customValidators,
   logger,

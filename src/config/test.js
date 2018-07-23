@@ -7,4 +7,5 @@ const CONFIG = {
   SECRET_KEY: 'thesupersecretkey'
 };
 
-export default CONFIG;
+module.exports = CONFIG;
+

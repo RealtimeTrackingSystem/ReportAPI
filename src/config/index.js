@@ -1,8 +1,8 @@
-import development from './development';
-import production from './production';
-import test from './test';
+const development = require('./development');
+const production = require('./production');
+const test = require('./test');
 
-export default {
+module.exports = {
   development,
   production,
   test

@@ -2,8 +2,8 @@
  * Client Route
  * /api/client
  */
-import { Router } from 'express';
-import handlers from '../handlers';
+const { Router } = require('express');
+const handlers = require('../handlers');
 
 const clientRoute = Router();
 clientRoute.post('/api/clients',

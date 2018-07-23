@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
 
@@ -12,4 +12,4 @@ const PropertySchema = new Schema({
 
 const Property = mongoose.model('Property', PropertySchema);
 
-export default Property;
+module.exports = Property;

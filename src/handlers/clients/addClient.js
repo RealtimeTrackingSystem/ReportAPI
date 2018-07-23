@@ -1,6 +1,6 @@
 
-import _ from 'lodash';
-import lib from '../../lib';
+const _ = require('lodash');
+const lib = require('../../lib');
 
 function validateParams (req, res, next) {
   const schema = {
@@ -139,7 +139,7 @@ function checkDuplicateOrg (req, res, next) {
       return next();
     }).catch(function (err) {
       req.logger.error('POST /api/clients', err);
-      const errorObject = lib.errorResponses.internalServerError('Failed in Finding Organization from Database');
+      const errorObject = lib.errorResponses.internalServerError('Failed in Finding Organization = require(Database');
       return res.status(errorObject.httpCode).send(errorObject);
     });
 }
@@ -165,7 +165,7 @@ function checkDuplicateClient (req, res, next) {
     return next();
   }).catch(function (err) {
     req.logger.error('POST /api/clients', err);
-    const errorObject = lib.errorResponses.internalServerError('Failed in Finding Client from Database');
+    const errorObject = lib.errorResponses.internalServerError('Failed in Finding Client = require(Database');
     return res.status(errorObject.httpCode).send(errorObject);
   });
 }
@@ -242,7 +242,7 @@ function respond (req, res) {
   });
 }
 
-export default {
+module.exports = {
   validateParams,
   addClientToScope,
   checkDuplicateClient,

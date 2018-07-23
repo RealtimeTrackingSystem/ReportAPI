@@ -1,7 +1,7 @@
-import getReports from './getReports';
-import createReport from './createReport';
+const getReports = require('./getReports');
+const createReport = require('./createReport');
 
-export default {
+module.exports = {
   getReports,
   createReport
 };

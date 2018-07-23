@@ -1,5 +1,4 @@
-require('mongoose');
-import DB from '../../../models';
+const DB = require('../../../models');
 const Report = DB.Report;
 
 const all = [
@@ -49,6 +48,6 @@ const all = [
   })
 ];
 
-export default {
+module.exports = {
   all
 };

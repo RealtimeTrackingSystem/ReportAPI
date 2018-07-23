@@ -1,4 +1,4 @@
-import lib from '../../lib';
+const lib = require('../../lib');
 function validateBody (req, res, next) {
   const schema = {
     title: {
@@ -39,7 +39,7 @@ function respond (req, res) {
   });
 }
 
-export default {
+module.exports = {
   validateBody,
   logic,
   respond

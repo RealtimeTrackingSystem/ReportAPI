@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const OrganizationSchema = new Schema({
@@ -41,4 +41,4 @@ OrganizationSchema.statics.findWithNameOrEmail = function (name, email) {
 
 const Organization = mongoose.model('Organization', OrganizationSchema);
 
-export default Organization;
+module.exports = Organization;

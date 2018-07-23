@@ -33,7 +33,7 @@ function internalServerError (errorMessage) {
   };
 }
 
-export default {
+module.exports = {
   validationError,
   internalServerError
 };

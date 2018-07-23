@@ -2,8 +2,8 @@
  * Report Route
  * /api/report
  */
-import { Router } from 'express';
-import handlers from '../handlers';
+const { Router } = require('express');
+const handlers = require('../handlers');
 
 const reportRoute = Router();
 

@@ -1,7 +1,7 @@
-import clients from './clients';
-import reports from './reports';
+const clients = require('./clients');
+const reports = require('./reports');
 
-export default {
+module.exports = {
   clients,
   reports
 };

@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import lib from '../lib';
+const mongoose = require('mongoose');
+const lib = require('../lib');
 const { Schema } = mongoose;
 const { Types } = Schema;
 const { crypto } = lib;
@@ -29,4 +29,4 @@ ClientSchema.statics.add = function (client) {
 
 const Client = mongoose.model('Client', ClientSchema);
 
-export default Client;
+module.exports = Client;

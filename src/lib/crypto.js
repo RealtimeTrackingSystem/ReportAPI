@@ -1,8 +1,8 @@
-import bcrypt from 'bcrypt-nodejs';
-import codeGen from 'node-code-generator';
-import jwt from 'jwt-simple';
-import Promise from 'bluebird';
-import CONFIG from '../config';
+const bcrypt = require('bcrypt-nodejs');
+const codeGen = require('node-code-generator');
+const jwt = require('jwt-simple');
+const Promise = require('bluebird');
+const CONFIG = require('../config');
 
 function genSalt (num) {
   return new Promise(function (resolve, reject) {
@@ -57,7 +57,7 @@ function decodeToken (token) {
   return jwt.decode(token, CONFIG.SECRET_KEY);
 }
 
-export default {
+module.exports = {
   genSalt,
   hash,
   compareHash,

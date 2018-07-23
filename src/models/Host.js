@@ -1,6 +1,5 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { Types } = Schema;
 
 const HostSchema = new Schema({
   email: { type: String },
@@ -19,8 +18,8 @@ const HostSchema = new Schema({
   city: { type: String },
   region: { type: String },
   country: { type: String }
-}, { timestamps: true })
+}, { timestamps: true });
 
 const Host = mongoose.model('Host', HostSchema);
 
-export default Host;
+module.exports = Host;

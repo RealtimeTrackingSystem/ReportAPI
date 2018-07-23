@@ -1,14 +1,14 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import validator from 'express-validator';
-import morgan from 'morgan';
-import logger from 'morgan';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const validator = require('express-validator');
+const morgan = require('morgan');
+const logger = require('morgan');
 
-import routes from './routes';
-import DB from './models';
-import CONFIG from './config';
-import lib from './lib';
+const routes = require('./routes');
+const DB = require('./models');
+const CONFIG = require('./config');
+const lib = require('./lib');
 
 // set up express app
 const app = express();
@@ -60,4 +60,4 @@ app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });
 
-export default app;
+module.exports = app;
