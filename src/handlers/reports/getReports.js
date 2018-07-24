@@ -1,3 +1,8 @@
+
+function validateQuery (req, res, next) {
+
+}
+
 function logic (req, res) {
   const limit = parseInt(req.query.limit) || 30;
   const page = parseInt(req.query.page) || 0;
@@ -13,5 +18,6 @@ function logic (req, res) {
 }
 
 module.exports = {
+  validateQuery,
   logic
 };
