@@ -1,5 +1,5 @@
 const CONFIG = {
-  DATABASE: process.env.MONGODB_URI || 'mongodb://localhost:27017/reportApiDbProd',
+  DATABASE: process.env.DATABASE || 'mongodb://localhost:27017/reportApiDbProd',
   LOG: {
     env: process.env.LOG_ENV || 'prod'
   },
