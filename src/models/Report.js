@@ -67,6 +67,12 @@ ReportSchema.statics.add = function (report) {
   return newReport.save();
 };
 
+ReportSchema.statics.findPaginated = function (query = {}, page, limit) {
+  const allowedLimit = limit < 31 ? limit : 30;
+  const offset = page * allowedLimit;
+  return Report.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+};
+
 const Report = mongoose.model('Report', ReportSchema);
 
 module.exports = Report;
