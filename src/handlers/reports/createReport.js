@@ -46,21 +46,21 @@ function validateBody (req, res, next) {
       }
     },
     people: {
-      notEmpty: true,
+      optional: true,
       errorMessage: 'Missing Parameter: People',
       isArray: {
         errorMessage: 'Invalid Parameter: People'
       }
     },
     properties: {
-      notEmpty: true,
+      optional: true,
       errorMessage: 'Missing Parameter: Properties',
       isArray: {
         errorMessage: 'Invalid Parameter: Properties'
       }
     },
     medias: {
-      notEmpty: true,
+      optional: true,
       errorMessage: 'Missing Parameter: Medias',
       isArray: {
         errorMessage: 'Invalid Parameter: Medias'
@@ -87,27 +87,6 @@ function validateBody (req, res, next) {
 
 }
 
-function addPeopleToScope (req, res, next) {
-  if (req.body.people && req.body.people.length > 0) {
-    req.$scope.people = req.body.people;
-  }
-  next();
-}
-
-function addPropertiesToScope (req, res, next) {
-  if (req.body.properties && req.body.properties.length > 0) {
-    req.$scope.people = req.body.properties;
-  }
-  next();
-}
-
-function addMediasToScope (req, res, next) {
-  if (req.body.medias && req.body.medias.length > 0) {
-    req.$scope.medias = req.body.medias;
-  }
-  next();
-}
-
 function addReportToScope (req, res, next) {
   const report = {
     title: req.body.title,
@@ -117,15 +96,133 @@ function addReportToScope (req, res, next) {
     lat: req.body.lat,
     tags: req.body.tags
   };
-  req.$scope.report = report;
+  req.$scope.preparedReport = req.DB.Report.prepare(report);
   next();
 }
 
+function addPeopleToScope (req, res, next) {
+  if (req.body.people && req.body.people.length > 0) {
+    req.$scope.people = req.body.people
+      .map(function (person) {
+        return {
+          _report: req.$scope.preparedReport._id,
+          fname: person.fname,
+          lname: person.lname,
+          alias: person.alias,
+          isCulprit: person.isCulprit,
+          isCasualty: person.isCasualty
+        };
+      });
+  }
+  next();
+}
+
+function savePeopleToDB (req, res, next) {
+  if (!req.$scope.people) {
+    return next();
+  }
+  return req.DB.Person.addMany(req.$scope.people)
+    .then(function (addedPeople) {
+      const peopleIds = addedPeople.map(function (addedPerson) {
+        return addedPerson._id;
+      });
+      req.$scope.preparedReport.people = peopleIds;
+      return next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error('POST /api/reports', error);
+      res.status(500).send(err);
+    });
+}
+
+function addPropertiesToScope (req, res, next) {
+  if (req.body.properties && req.body.properties.length > 0) {
+    req.$scope.properties = req.body.properties
+      .map(function (property) {
+        return {
+          _report: req.$scope.preparedReport._id,
+          type: property.type,
+          owner: property.owner,
+          description: property.description,
+          estimatedCost: property.estimatedCost
+        };
+      });
+  }
+  next();
+}
+
+function savePropertiesToDB (req, res, next) {
+  if (!req.$scope.properties) {
+    return next();
+  }
+  return req.DB.Property.insertMany(req.$scope.properties)
+    .then(function (addedProperty) {
+      const properyIds = addedProperty.map(function (addedProp) {
+        return addedProp._id;
+      });
+      req.$scope.preparedReport.properties = properyIds;
+      return next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error('POST /api/reports', error);
+      res.status(500).send(err);
+    });
+}
+
+function addMediasToScope (req, res, next) {
+  if (req.body.medias && req.body.medias.length > 0) {
+    req.$scope.medias = req.body.medias
+      .map(function (media) {
+        return {
+          _report: req.$scope.preparedReport._id,
+          platform: media.platform,
+          metaData: media.metaData
+        };
+      });
+  }
+  next();
+}
+
+function saveMediasToDB (req, res, next) {
+  if (!req.$scope.medias) {
+    return next();
+  }
+  return req.DB.Media.insertMany(req.$scope.medias)
+    .then(function (addedMedias) {
+      const mediaIds = addedMedias.map(function (addedMedia) {
+        return addedMedia._id;
+      });
+      req.$scope.preparedReport.medias = mediaIds;
+      return next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error('POST /api/reports', error);
+      res.status(500).send(err);
+    });
+}
+
 function saveReportToDB (req, res, next) {
-  const report = _.clone(req.$scope.report);
-  return req.DB.Report.add(report)
+  return req.$scope.preparedReport
+    .save()
     .then(function (newReport) {
       req.$scope.newReport = newReport;
+      return next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internal Server Error');
+      req.logger.error('POST /api/reports', error);
+      res.status(500).send(err);
+    });
+}
+
+function saveReportToClientReport (req, res, next) {
+  const _client = req.$scope.clientCredentials._id;
+  const _report = req.$scope.preparedReport._id;
+  return req.DB.ClientReport.add({_client, _report})
+    .then(function () {
       return next();
     })
     .catch(function (error) {
@@ -149,9 +246,13 @@ function respond (req, res) {
 module.exports = {
   validateBody,
   addPropertiesToScope,
+  savePropertiesToDB,
   addMediasToScope,
+  saveMediasToDB,
   addPeopleToScope,
+  savePeopleToDB,
   addReportToScope,
   saveReportToDB,
+  saveReportToClientReport,
   respond
 };

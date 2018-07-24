@@ -30,6 +30,24 @@ const ReportSchema = new Schema({
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
 
+ReportSchema.statics.prepare = function (report) {
+  return new Report({
+    title: report.title,
+    description: report.description,
+    location: report.location,
+    long: report.long,
+    lat: report.lat,
+    tags: report.tags,
+    people: report.people,
+    properties: report.properties,
+    medias: report.medias,
+    reportCoordinates: {
+      type: 'Point',
+      coordinates: [report.long, report.lat]
+    }
+  });
+};
+
 ReportSchema.statics.add = function (report) {
   const newReport = new Report({
     title: report.title,
