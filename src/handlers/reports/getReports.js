@@ -1,6 +1,30 @@
+const lib = require('../../lib');
 
 function validateQuery (req, res, next) {
+  const schema = {
+    limit: {
+      optional: true,
+      isInt: {
+        errorMessage: 'Invalid Parameter: Limit'
+      }
+    },
+    page: {
+      optional: true,
+      isInt: {
+        errorMessage: 'Invalid Parameter: Page'
+      }
+    }
+  };
+  req.checkQuery(schema);
 
+  const validationErrors = req.validationErrors();
+  if (validationErrors) {
+    const errorObject = lib.errorResponses.validationError(validationErrors);
+    req.logger.warn('GET /api/reports', errorObject);
+    return res.status(errorObject.httpCode).send(errorObject);
+  } else {
+    return next();
+  }
 }
 
 function logic (req, res) {

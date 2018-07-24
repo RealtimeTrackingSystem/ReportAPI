@@ -9,13 +9,17 @@ describe('GET /api/reports', function () {
   let sandbox;
   let request;
   let getReports;
+  let client;
 
   beforeEach(function () {
     sandbox = sinon.createSandbox();
     request = supertest(api)
       .get('/api/reports');
-    getReports = sandbox.replace(api.DB.Report, 'find', function () {
+    getReports = sandbox.replace(api.DB.Report, 'findPaginated', function () {
       return Promise.resolve(fixtures.DB.reports.all);
+    });
+    client = sandbox.replace(api.DB.Client, 'findOne', function () {
+      return Promise.resolve(fixtures.DB.clients.all[0]);
     });
   });
   afterEach(function () {

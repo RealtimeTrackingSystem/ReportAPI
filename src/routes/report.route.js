@@ -9,6 +9,7 @@ const reportRoute = Router();
 
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
+  handlers.reports.getReports.validateQuery,
   handlers.reports.getReports.logic
 );
 
