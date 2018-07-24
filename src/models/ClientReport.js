@@ -7,6 +7,14 @@ const ClientReportSchema = new Schema({
   _client: { type: Types.ObjectId, ref: 'Client'}
 }, { timestamps: true });
 
+ClientReportSchema.statics.add = function (clientReport) {
+  const newClientReport = new ClientReport({
+    _report: clientReport._report,
+    _client: clientReport._client
+  });
+  return newClientReport.save();
+};
+
 const ClientReport = mongoose.model('ClientReport', ClientReportSchema);
 
 module.exports = ClientReport;
