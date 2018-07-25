@@ -11,6 +11,7 @@
   "author": "John Higgins Avila",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^6.2.1",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
@@ -23,6 +24,7 @@
     "node-code-generator": "^1.0.3",
     "sinon-mongoose": "^2.2.1",
     "winston": "^3.0.0",
+    "sendgrid": "^5.2.3",
     "winston-color": "^1.0.0"
   },
   "devDependencies": {

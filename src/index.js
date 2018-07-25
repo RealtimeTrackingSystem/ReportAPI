@@ -46,6 +46,7 @@ app.use(validator({
 app.use(function (req, res, next) {
   req.logger = {};
   req.logger = lib.logger;
+  req.mailer = lib.mailer;
   req.$scope = {};
   req.DB = DB;
   next();

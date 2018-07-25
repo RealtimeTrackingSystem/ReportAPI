@@ -1,11 +1,8 @@
-const crypto = require('./crypto');
-const customValidators = require('./customValidators');
-const logger = require('./logger');
-const errorResponses = require('./errorResponses');
 
 module.exports = {
-  crypto,
-  customValidators,
-  logger,
-  errorResponses
+  crypto: require('./crypto'),
+  customValidators: require('./customValidators'),
+  logger: require('./logger'),
+  errorResponses: require('./errorResponses'),
+  mailer: require('./mailer')
 };

@@ -1,6 +1,7 @@
 
 const _ = require('lodash');
 const lib = require('../../lib');
+const mailtemplates = require('../../assets/mailtemplates');
 
 function validateParams (req, res, next) {
   const schema = {
@@ -228,6 +229,23 @@ function saveClientToDb (req, res, next) {
     });
 }
 
+function sendInitialEmail (req, res, next) {
+  const client = req.$scope.newClient;
+  const organization = req.$scope.organization;
+  const initialMail = mailtemplates.sendAPIKey(client, organization);
+  return req.mailer
+    .simpleMail('REPORTAPITEAM@NOREPLY', client.email, 'REGISTRATION SUCCESS', initialMail)
+    .then(function (messageResponse) {
+      req.logger.info('POST /api/clients', {for: 'SendEmail', messageResponse});
+      return next();
+    })
+    .catch(function (err) {
+      req.logger.error('POST /api/clients', err);
+      const errorObject = lib.errorResponses.internalServerError('Failed in Sending Email to Client');
+      return res.status(errorObject.httpCode).send(errorObject);
+    });
+}
+
 function respond (req, res) {
   req.logger.info('POST /api/clients', {
     clientID: req.$scope.newClient._id,
@@ -250,5 +268,6 @@ module.exports = {
   addOrgToScope,
   saveOrgToDb,
   saveClientToDb,
+  sendInitialEmail,
   respond
 };
