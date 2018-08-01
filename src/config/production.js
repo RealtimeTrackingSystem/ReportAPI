@@ -1,5 +1,6 @@
 const CONFIG = {
   DATABASE: process.env.DATABASE || 'mongodb://localhost:27017/reportApiDbProd',
+  REDIS_URL: process.env.REDIS_URL,
   LOG: {
     env: process.env.LOG_ENV || 'info'
   },
