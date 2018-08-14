@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const { Types } = Schema;
 
 const ReporterSchema = new Schema({
-  _report: { type: Types.ObjectId, ref: 'Report' },
   fname: { type: String },
   lname: { type: String },
   alias: { type: String },

@@ -17,7 +17,8 @@ const HostSchema = new Schema({
   barangay: { type: String },
   city: { type: String },
   region: { type: String },
-  country: { type: String }
+  country: { type: String },
+  zip: { type: String }
 }, { timestamps: true });
 
 const Host = mongoose.model('Host', HostSchema);
