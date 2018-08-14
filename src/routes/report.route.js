@@ -7,11 +7,16 @@ const handlers = require('../handlers');
 
 const reportRoute = Router();
 
+reportRoute.put('/api/reports/status/:reportId',
+  handlers.reports.putReportStatus.validateBody,
+  handlers.reports.putReportStatus.validateStatus,
+  handlers.reports.putReportStatus.logic,
+  handlers.reports.putReportStatus.respond);
+
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
   handlers.reports.getReports.validateQuery,
-  handlers.reports.getReports.logic
-);
+  handlers.reports.getReports.logic);
 
 reportRoute.post('/api/reports',
   handlers.authentication.clientAuth.authenticate,
@@ -25,7 +30,6 @@ reportRoute.post('/api/reports',
   handlers.reports.createReport.savePropertiesToDB,
   handlers.reports.createReport.saveReportToClientReport,
   handlers.reports.createReport.saveReportToDB,
-  handlers.reports.createReport.respond
-);
+  handlers.reports.createReport.respond);
 
 module.exports = reportRoute;
