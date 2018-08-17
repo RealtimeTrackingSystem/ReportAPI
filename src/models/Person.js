@@ -23,7 +23,7 @@ PersonSchema.statics.add = function (person) {
   return newPerson.save();
 };
 
-PersonSchema.statics.prepare = function (person) {
+PersonSchema.statics.hydrate = function (person) {
   return new Person({
     _report: person._report,
     fname: person.fname,

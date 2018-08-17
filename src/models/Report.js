@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
 
+const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED' ];
+
 const ReportSchema = new Schema({
   // generatedID: { type: String, unique: true }, requires category
   title: { type: String, required: true },
@@ -9,9 +11,9 @@ const ReportSchema = new Schema({
   location: { type: String },
   long: { type: Number },
   lat: { type: Number },
-  _reporter: { type:Types.ObjectId, ref: 'Reporter' },
-  _host: { type: Types.ObjectId, ref: 'Host' },
-  status: { type: String, enum: [ 'NEW', 'INPROGRESS', 'DONE', 'EXPIRED'], default: 'NEW' },
+  _reporter: { type:Types.ObjectId, ref: 'Reporter', required: true },
+  _host: { type: Types.ObjectId, ref: 'Host', required: true },
+  status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED'], default: 'NEW' },
   reportCoordinates: {
     type: {type: String, enum: 'Point', default: 'Point'},
     coordinates: { type: [Number], default: [0, 0]}
@@ -30,7 +32,7 @@ const ReportSchema = new Schema({
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
 
-ReportSchema.statics.prepare = function (report) {
+ReportSchema.statics.hydrate = function (report) {
   return new Report({
     title: report.title,
     description: report.description,
@@ -44,7 +46,9 @@ ReportSchema.statics.prepare = function (report) {
     reportCoordinates: {
       type: 'Point',
       coordinates: [report.long, report.lat]
-    }
+    },
+    _reporter: report._reporter,
+    _host: report._host
   });
 };
 
@@ -62,7 +66,9 @@ ReportSchema.statics.add = function (report) {
     reportCoordinates: {
       type: 'Point',
       coordinates: [report.long, report.lat]
-    }
+    },
+    _reporter: report._reporter,
+    _host: report._host
   });
   return newReport.save();
 };
@@ -71,6 +77,48 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
   return Report.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+};
+
+ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
+  return Report.findById(_id)
+    .then(function (report) {
+      if (!report) {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Resource: Report ID'
+        };
+        throw error;
+      }
+      if (REPORT_LIST.indexOf(status.toUpperCase()) < 0) {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Resource: Status - Unknown Status [' + status + ']'
+        };
+        throw error;
+      }
+      if (REPORT_LIST.indexOf(report.status)
+        >= REPORT_LIST.indexOf(status.toUpperCase())) {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Resource: Status'
+        };
+        throw error;
+      }
+      return report;
+    });
+};
+
+ReportSchema.statics.updateStatus = function (_id, status) {
+  return Report.findByIdAndUpdate(_id, {status: status.toUpperCase()})
+    .then(function () {
+      return Report.findById(_id);
+    });
 };
 
 const Report = mongoose.model('Report', ReportSchema);

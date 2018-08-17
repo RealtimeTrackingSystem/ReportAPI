@@ -9,9 +9,9 @@ const reportRoute = Router();
 
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.authenticate,
   handlers.reports.getReports.validateQuery,
-  handlers.reports.getReports.logic
-);
+  handlers.reports.getReports.logic);
 
 reportRoute.post('/api/reports',
   handlers.authentication.clientAuth.authenticate,
@@ -25,7 +25,21 @@ reportRoute.post('/api/reports',
   handlers.reports.createReport.savePropertiesToDB,
   handlers.reports.createReport.saveReportToClientReport,
   handlers.reports.createReport.saveReportToDB,
-  handlers.reports.createReport.respond
-);
+  handlers.reports.createReport.respond);
+
+reportRoute.get('/api/reports/:reportId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reports.getReportById.validateResources,
+  handlers.reports.getReportById.queryBuilder,
+  handlers.reports.getReportById.logic,
+  handlers.reports.getReportById.respond);
+
+reportRoute.put('/api/reports/status/:reportId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reports.putReportStatus.validateBody,
+  handlers.reports.putReportStatus.validateStatus,
+  handlers.reports.putReportStatus.logic,
+  handlers.reports.putReportStatus.respond);
+
 
 module.exports = reportRoute;

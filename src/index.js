@@ -12,7 +12,8 @@ const lib = require('./lib');
 
 // set up express app
 const app = express();
-const config = CONFIG[process.env.NODE_ENV || 'development'];
+const env = process.env.NODE_ENV;
+const config = CONFIG[env];
 
 // connect MongoDB
 mongoose.connect(config.DATABASE, { useNewUrlParser: true });

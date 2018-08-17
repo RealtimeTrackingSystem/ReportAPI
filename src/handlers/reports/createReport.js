@@ -29,7 +29,7 @@ function validateBody (req, res, next) {
     long: {
       notEmpty: true,
       errorMessage: 'Missing Parameter: Longitude',
-      isInt: {
+      isNumber: {
         options: { min: 0 },
         errorMessage: 'Invalid Parameter Length: Longitude'
       }
@@ -37,10 +37,18 @@ function validateBody (req, res, next) {
     lat: {
       notEmpty: true,
       errorMessage: 'Missing Parameter: Latitude',
-      isInt: {
+      isNumber: {
         options: { min: 0 },
         errorMessage: 'Invalid Parameter Length: Latitude'
       }
+    },
+    hostId: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Host ID'
+    },
+    reporterId: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Reporter ID'
     },
     people: {
       optional: true,
@@ -76,12 +84,70 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('POST /api/reports', errorObject);
+    req.logger.warn(errorObject, 'POST /api/reports');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
   }
 
+}
+
+function validateHost (req, res, next) {
+  const hostId = req.body.hostId;
+  const validId = lib.customValidators.isObjectId(hostId);
+  const error = {
+    status: 'ERROR',
+    statusCode: 2,
+    httpCode: 400,
+    message: 'Invalid Parameter: Host ID'
+  };
+  if (!validId) {
+    req.logger.warn(error, 'POST /api/reports');
+    return res.status(error.httpCode).send(error);
+  }
+  return req.DB.Host.findById(hostId)
+    .then(function (host) {
+      if (!host) {
+        req.logger.warn(error, 'POST /api/reports');
+        return res.status(error.httpCode).send(error);
+      }
+      req.$scope.host = host;
+      next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error(error, 'POST /api/reports');
+      res.status(500).send(err);
+    });
+}
+
+function validateReporter (req, res, next) {
+  const reporterId = req.body.reporterId;
+  const validId = lib.customValidators.isObjectId(reporterId);
+  const error = {
+    status: 'ERROR',
+    statusCode: 2,
+    httpCode: 400,
+    message: 'Invalid Parameter: Reporter ID'
+  };
+  if (!validId) {
+    req.logger.warn(error, 'POST /api/reports');
+    return res.status(error.httpCode).send(error);
+  }
+  return req.DB.Reporter.findById(reporterId)
+    .then(function (reporter) {
+      if (!reporter) {
+        req.logger.warn(error, 'POST /api/reports');
+        return res.status(error.httpCode).send(error);
+      }
+      req.$scope.reporter = reporter;
+      next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error(error, 'POST /api/reports');
+      res.status(500).send(err);
+    });
 }
 
 function addReportToScope (req, res, next) {
@@ -91,9 +157,11 @@ function addReportToScope (req, res, next) {
     location: req.body.location,
     long: req.body.long,
     lat: req.body.lat,
-    tags: req.body.tags
+    tags: req.body.tags,
+    _reporter: req.body.reporterId,
+    _host: req.body.hostId
   };
-  req.$scope.preparedReport = req.DB.Report.prepare(report);
+  req.$scope.preparedReport = req.DB.Report.hydrate(report);
   next();
 }
 
@@ -128,7 +196,7 @@ function savePeopleToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error('POST /api/reports', error);
+      req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -163,7 +231,7 @@ function savePropertiesToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error('POST /api/reports', error);
+      req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -196,7 +264,7 @@ function saveMediasToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error('POST /api/reports', error);
+      req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -223,8 +291,8 @@ function saveReportToClientReport (req, res, next) {
       return next();
     })
     .catch(function (error) {
-      const err = lib.errorResponses.internalServerError('Internal Server Error');
-      req.logger.error('POST /api/reports', error);
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -242,6 +310,8 @@ function respond (req, res) {
 
 module.exports = {
   validateBody,
+  validateReporter,
+  validateHost,
   addPropertiesToScope,
   savePropertiesToDB,
   addMediasToScope,

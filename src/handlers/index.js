@@ -1,9 +1,8 @@
-const clients = require('./clients');
-const reports = require('./reports');
-const authentication = require('./authentication');
 
 module.exports = {
-  authentication,
-  clients,
-  reports
+  authentication: require('./authentication'),
+  clients: require('./clients'),
+  reports: require('./reports'),
+  hosts: require('./hosts'),
+  reporters: require('./reporters')
 };
