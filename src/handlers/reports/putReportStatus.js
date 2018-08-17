@@ -12,7 +12,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('PUT /api/reports/status/:reportId', errorObject);
+    req.logger.warn(errorObject, 'PUT /api/reports/status/:reportId');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -32,7 +32,7 @@ function validateStatus (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error('PUT /api/reports/status/:reportId', err);
+      req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -54,7 +54,7 @@ function logic (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error('PUT /api/reports/status/:reportId', err);
+      req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,

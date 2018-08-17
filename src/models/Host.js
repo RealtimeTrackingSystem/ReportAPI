@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const HostSchema = new Schema({
-  email: { type: String },
+  name: { type: String, unique: true, required: true },
+  email: { type: String, unique: true, required: true  },
   location: { type: String },
   description: { type: String },
   hostNature: { type: String },
@@ -20,6 +21,59 @@ const HostSchema = new Schema({
   country: { type: String },
   zip: { type: String }
 }, { timestamps: true });
+
+HostSchema.statics.hydrate = function (host) {
+  return new Host({
+    name: host.name,
+    email: host.email,
+    location: host.location,
+    description: host.description,
+    hostNature: host.hostNature,
+    defaultTags: host.defaultTags.concat([host.name]),
+    long: host.long,
+    lat: host.lat,
+    hostCoordinates: {
+      type: 'Point',
+      coordinates: [host.long, host.lat]
+    },
+    street: host.street,
+    barangay: host.barangay,
+    city: host.city,
+    region: host.region,
+    country: host.country,
+    zip: host.zip
+  });
+};
+
+HostSchema.statics.add = function (host) {
+  const newHost = new Host({
+    name: host.name,
+    email: host.email,
+    location: host.location,
+    description: host.description,
+    hostNature: host.hostNature,
+    defaultTags: host.defaultTags.concat([host.name]),
+    long: host.long,
+    lat: host.lat,
+    hostCoordinates: {
+      type: 'Point',
+      coordinates: [host.long, host.lat]
+    },
+    street: host.street,
+    barangay: host.barangay,
+    city: host.city,
+    region: host.region,
+    country: host.country,
+    zip: host.zip
+  });
+  return newHost.save();
+};
+
+HostSchema.statics.findPaginated = function (query = {}, page, limit) {
+  const allowedLimit = limit < 31 ? limit : 30;
+  const offset = page * allowedLimit;
+  return Host.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+};
 
 const Host = mongoose.model('Host', HostSchema);
 

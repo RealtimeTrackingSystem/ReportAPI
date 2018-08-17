@@ -6,7 +6,7 @@
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --harmony $(find src/test/unit -name *.test.js) -x $(find src/test/unit -name *.test.js) --exit",
     "start": "node  -r dotenv/config src/index.js",
-    "dev": "nodemon --exec npm run start"
+    "dev": "nodemon --exec NODE_ENV=development npm run start"
   },
   "author": "John Higgins Avila",
   "license": "ISC",

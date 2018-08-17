@@ -1,4 +1,4 @@
-function sendAPIKey (client, organization = null) {
+function sendAPIKey (client, organization) {
   const mailString
     = `
       <p>Greetings!</p>

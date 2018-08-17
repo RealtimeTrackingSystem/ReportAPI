@@ -11,8 +11,8 @@ const ReportSchema = new Schema({
   location: { type: String },
   long: { type: Number },
   lat: { type: Number },
-  _reporter: { type:Types.ObjectId, ref: 'Reporter' },
-  _host: { type: Types.ObjectId, ref: 'Host' },
+  _reporter: { type:Types.ObjectId, ref: 'Reporter', required: true },
+  _host: { type: Types.ObjectId, ref: 'Host', required: true },
   status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED'], default: 'NEW' },
   reportCoordinates: {
     type: {type: String, enum: 'Point', default: 'Point'},
@@ -32,7 +32,7 @@ const ReportSchema = new Schema({
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
 
-ReportSchema.statics.prepare = function (report) {
+ReportSchema.statics.hydrate = function (report) {
   return new Report({
     title: report.title,
     description: report.description,
@@ -46,7 +46,9 @@ ReportSchema.statics.prepare = function (report) {
     reportCoordinates: {
       type: 'Point',
       coordinates: [report.long, report.lat]
-    }
+    },
+    _reporter: report._reporter,
+    _host: report._host
   });
 };
 
@@ -64,7 +66,9 @@ ReportSchema.statics.add = function (report) {
     reportCoordinates: {
       type: 'Point',
       coordinates: [report.long, report.lat]
-    }
+    },
+    _reporter: report._reporter,
+    _host: report._host
   });
   return newReport.save();
 };

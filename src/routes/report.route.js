@@ -15,7 +15,6 @@ reportRoute.put('/api/reports/status/:reportId',
 
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
-  handlers.authentication.clientAuth.logActivity,
   handlers.reports.getReports.validateQuery,
   handlers.reports.getReports.addTagsToWhereClause,
   handlers.reports.getReports.logic);
@@ -33,5 +32,12 @@ reportRoute.post('/api/reports',
   handlers.reports.createReport.saveReportToClientReport,
   handlers.reports.createReport.saveReportToDB,
   handlers.reports.createReport.respond);
+
+reportRoute.get('/api/reports/:reportId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reports.getReportById.validateResources,
+  handlers.reports.getReportById.queryBuilder,
+  handlers.reports.getReportById.logic,
+  handlers.reports.getReportById.respond);
 
 module.exports = reportRoute;
