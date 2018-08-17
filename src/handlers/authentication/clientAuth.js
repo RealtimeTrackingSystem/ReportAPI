@@ -14,12 +14,14 @@ function authenticate (req, res, next) {
   return req.DB.Client.findOne({
     apiKey: req.headers['api-key']
   })
+    .select('-password')
     .then(function (client) {
       if (!client) {
         req.logger.warn(err, 'Client-Authentication');
         return res.status(401).send(err);
       }
       req.$scope.clientCredentials = client;
+      req.$scope.authenticated = true;
       return next();
     })
     .catch(function (err) {
@@ -29,6 +31,19 @@ function authenticate (req, res, next) {
     });
 }
 
+function logActivity (req, res, next) {
+  const client = req.$scope.clientCredentials;
+  const requestMethod = req.method;
+  const requestPath = req.path;
+  req.logger.info('Logging Activity -- ' + new Date(), {
+    client,
+    requestMethod,
+    requestPath
+  });
+  next();
+}
+
 module.exports = {
-  authenticate
+  authenticate,
+  logActivity
 };

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test nyc mocha --harmony $(find src/test/unit -name *.test.js) -x $(find src/test/unit -name *.test.js) --exit",
-    "start": "node src/index.js",
+    "start": "node  -r dotenv/config src/index.js",
     "dev": "nodemon --exec NODE_ENV=development npm run start"
   },
   "author": "John Higgins Avila",
@@ -22,14 +22,16 @@
     "mongoose": "^5.2.4",
     "morgan": "^1.9.0",
     "node-code-generator": "^1.0.3",
+    "redis": "^2.8.0",
+    "sendgrid": "^5.2.3",
     "sinon-mongoose": "^2.2.1",
     "winston": "^3.0.0",
-    "sendgrid": "^5.2.3",
     "winston-color": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "deep-equal": "^1.0.1",
+    "dotenv": "^6.0.0",
     "eslint": "^5.2.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
