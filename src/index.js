@@ -5,6 +5,11 @@ const validator = require('express-validator');
 const morgan = require('morgan');
 const logger = require('morgan');
 
+// loading .env file for non production env
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').load();
+}
+
 const routes = require('./routes');
 const DB = require('./models');
 const CONFIG = require('./config');
@@ -16,6 +21,10 @@ const env = process.env.NODE_ENV;
 const config = CONFIG[env];
 
 // connect MongoDB
+require('./models');
+if (config.REDIS_URL) {
+  require('./lib/cache');
+}
 mongoose.connect(config.DATABASE, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 

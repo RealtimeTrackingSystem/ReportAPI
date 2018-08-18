@@ -8,14 +8,12 @@ const sgMailHelper = require('sendgrid').mail;
 const Promise = require('bluebird');
 
 function simpleMail (sender, receiver, subject, htmlMessage)  {
-  console.log(sender);
   const msg = {
     to: receiver,
     from: sender,
     subject: subject,
     html: htmlMessage
   };
-  console.log(CONFIG.SENDGRID.SENDGRID_API_KEY);
   sgMail.setApiKey(CONFIG.SENDGRID.SENDGRID_API_KEY);
   return sgMail.send(msg);
 }
