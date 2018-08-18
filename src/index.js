@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const logger = require('morgan');
 
 // loading .env file for non production env
+/* istanbul ignore next */
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load();
 }
@@ -22,6 +23,7 @@ const config = CONFIG[env];
 
 // connect MongoDB
 require('./models');
+/* istanbul ignore next */
 if (config.REDIS_URL) {
   require('./lib/cache');
 }

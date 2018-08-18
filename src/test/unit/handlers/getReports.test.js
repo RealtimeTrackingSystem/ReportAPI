@@ -97,6 +97,9 @@ describe('GET /api/reports', function () {
         return Promise.reject(new Error('test error'));
       });
     });
+    afterEach(function () {
+      sandbox.restore();
+    });
     it('should return 401', function (done) {
       request
         .send()

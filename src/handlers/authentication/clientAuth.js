@@ -14,12 +14,13 @@ function authenticate (req, res, next) {
   return req.DB.Client.findOne({
     apiKey: req.headers['api-key']
   })
-    .select('-password')
     .then(function (client) {
       if (!client) {
         req.logger.warn(err, 'Client-Authentication');
         return res.status(401).send(err);
       }
+      client = client.toObject();
+      delete client.password;
       req.$scope.clientCredentials = client;
       req.$scope.authenticated = true;
       return next();
