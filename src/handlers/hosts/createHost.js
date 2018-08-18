@@ -129,7 +129,7 @@ function checkDuplicates (req, res, next) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Host [ Email or Name] Already Exists'
+          message: 'Invalid Resource: Host [ Email or Name ] Already Exists'
         };
         req.logger.warn(error, 'POST /api/hosts');
         return res.status(error.httpCode).send(error);
