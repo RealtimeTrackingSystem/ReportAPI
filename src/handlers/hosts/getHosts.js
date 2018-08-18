@@ -32,12 +32,14 @@ function logic (req, res) {
   const page = parseInt(req.query.page) || 0;
   return req.DB.Host.findPaginated({}, page, limit)
     .then(function (reports) {
-      res.status(200).send({
+      const result = {
         status: 'SUCCESS',
         statusCode: 0,
         httpCode: 200,
         reports: reports
-      });
+      };
+      req.logger.info(result, 'GET /api/hosts');
+      res.status(200).send(result);
     })
     .catch(function (err) {
       req.logger.error(err, 'GET /api/hosts');

@@ -36,11 +36,11 @@ function logActivity (req, res, next) {
   const client = req.$scope.clientCredentials;
   const requestMethod = req.method;
   const requestPath = req.path;
-  req.logger.info('Logging Activity -- ' + new Date(), {
+  req.logger.info({
     client,
     requestMethod,
     requestPath
-  });
+  }, 'Logging Activity -- ' + new Date());
   next();
 }
 
