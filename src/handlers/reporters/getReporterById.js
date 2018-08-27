@@ -23,9 +23,6 @@ function logic (req, res, next) {
       next();
     })
     .catch(function (err) {
-      if (err.httpCode) {
-        return res.status(err.httpCode).send(err);
-      }
       req.logger.error(err, 'PUT /api/reports/:reportId');
       res.status(500).send({
         status: 'ERROR',
@@ -37,7 +34,7 @@ function logic (req, res, next) {
 }
 
 function respond (req, res) {
-  req.logger.info(req.$scope.reporter.toObject(), 'PUT /api/reporters/:reporterId');
+  req.logger.info(req.$scope.reporter ? req.$scope.reporter.toObject() : null, 'PUT /api/reporters/:reporterId');
   res.status(200).send({
     status: 'SUCCESS',
     statusCode: 0,
