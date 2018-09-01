@@ -41,18 +41,14 @@ function addTagsToWhereClause (req, res, next) {
   next();
 }
 
-function logic (req, res) {
+function getReports (req, res, next) {
   const limit = parseInt(req.query.limit) || 30;
   const page = parseInt(req.query.page) || 0;
   const where = req.$scope.whereClause || {};
   return req.DB.Report.findPaginated(where, page, limit)
     .then(function (reports) {
-      res.status(200).send({
-        status: 'SUCCESS',
-        statusCode: 0,
-        httpCode: 200,
-        reports: reports
-      });
+      req.$scope.reports = reports;
+      next();
     })
     .catch(function (err) {
       req.logger.error(err, 'GET /api/reports');
@@ -65,8 +61,40 @@ function logic (req, res) {
     });
 }
 
+function getReportCount (req, res, next) {
+  const where = req.$scope.whereClause || {};
+  return req.DB.Report.countDocuments(where)
+    .then(function (count) {
+      req.$scope.reportCount = count;
+      next();
+    })
+    .catch(function (err) {
+      req.logger.error(err, 'GET /api/reports');
+      res.status(500).send({
+        status: 'ERROR',
+        statusCode: 1,
+        httpCode: 500,
+        message: 'Internal Server Error'
+      });
+    });
+}
+
+function respond (req, res) {
+  const result = {
+    status: 'SUCCESS',
+    statusCode: 0,
+    httpCode: 200,
+    reports: req.$scope.reports,
+    count: req.$scope.reportCount
+  };
+  req.logger.info(result, 'GET /api/reports');
+  res.status(result.httpCode).send(result);
+}
+
 module.exports = {
   validateQuery,
   addTagsToWhereClause,
-  logic
+  getReports,
+  getReportCount,
+  respond
 };
