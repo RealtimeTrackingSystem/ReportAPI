@@ -10,7 +10,10 @@ const hostRoute = Router();
 hostRoute.get('/api/hosts',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.getHosts.validateQuery,
-  handlers.hosts.getHosts.logic);
+  handlers.hosts.getHosts.processFilter,
+  handlers.hosts.getHosts.getHostCount,
+  handlers.hosts.getHosts.logic,
+  handlers.hosts.getHosts.respond);
 
 hostRoute.post('/api/hosts',
   handlers.authentication.clientAuth.authenticate,
