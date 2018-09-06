@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 const { Types } = Schema;
 
 const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED' ];
+const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
 
 const ReportSchema = new Schema({
   // generatedID: { type: String, unique: true }, requires category
@@ -73,10 +74,30 @@ ReportSchema.statics.add = function (report) {
   return newReport.save();
 };
 
-ReportSchema.statics.findPaginated = function (query = {}, page, limit) {
+ReportSchema.statics.findPaginated = function (query = {}, page, limit, resources) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
-  return Report.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+  const ReportQuery = Report.find(query);
+  if (resources.indexOf('reporter') > -1) {
+    ReportQuery.populate('_reporter');
+  }
+
+  if (resources.indexOf('host') > -1) {
+    ReportQuery.populate('_host');
+  }
+
+  if (resources.indexOf('people') > -1) {
+    ReportQuery.populate('people');
+  }
+
+  if (resources.indexOf('properties') > -1) {
+    ReportQuery.populate('properties');
+  }
+
+  if (resources.indexOf('medias') > -1) {
+    ReportQuery.populate('medias');
+  }
+  return ReportQuery.skip(offset).limit(allowedLimit).sort('-createdAt');
 };
 
 ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
