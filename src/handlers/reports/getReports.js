@@ -1,5 +1,7 @@
 const lib = require('../../lib');
 
+const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
+
 function validateQuery (req, res, next) {
   const schema = {
     limit: {
@@ -45,7 +47,18 @@ function getReports (req, res, next) {
   const limit = parseInt(req.query.limit) || 30;
   const page = parseInt(req.query.page) || 0;
   const where = req.$scope.whereClause || {};
-  return req.DB.Report.findPaginated(where, page, limit)
+  const resources
+    = req.query.resources
+      ? req.query.resources
+        .split(',')
+        .reduce(function (p, c) {
+          if (ALLOWED_RESOURCES.indexOf(c) > -1) {
+            return p.concat([c]);
+          }
+          return p;
+        }, [])
+      : [];
+  return req.DB.Report.findPaginated(where, page, limit, resources)
     .then(function (reports) {
       req.$scope.reports = reports;
       next();

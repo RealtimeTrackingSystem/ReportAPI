@@ -67,7 +67,7 @@ function logic (req, res, next) {
 }
 
 function respond (req, res) {
-  req.logger.info(req.$scope.report.toObject(), 'PUT /api/reports/:reportId');
+  req.logger.info(req.$scope.report, 'PUT /api/reports/:reportId');
   res.status(200).send({
     status: 'SUCCESS',
     statusCode: 0,
