@@ -13,7 +13,7 @@ const ReportSchema = new Schema({
   long: { type: Number },
   lat: { type: Number },
   _reporter: { type:Types.ObjectId, ref: 'Reporter', required: true },
-  _host: { type: Types.ObjectId, ref: 'Host', required: true },
+  _host: { type: Types.ObjectId, ref: 'Host' },
   status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED'], default: 'NEW' },
   reportCoordinates: {
     type: {type: String, enum: 'Point', default: 'Point'},
