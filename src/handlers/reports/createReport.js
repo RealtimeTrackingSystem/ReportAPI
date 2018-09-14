@@ -43,8 +43,11 @@ function validateBody (req, res, next) {
       }
     },
     hostId: {
-      notEmpty: true,
-      errorMessage: 'Missing Parameter: Host ID'
+      notEmpty: false,
+      isLength: {
+        options: { max: 255 },
+        errorMessage: 'Invalid Parameter Length: Location'
+      }
     },
     reporterId: {
       notEmpty: true,
@@ -94,6 +97,9 @@ function validateBody (req, res, next) {
 
 function validateHost (req, res, next) {
   const hostId = req.body.hostId;
+  if (!hostId) {
+    return next();
+  }
   const validId = lib.customValidators.isObjectId(hostId);
   const error = {
     status: 'ERROR',
