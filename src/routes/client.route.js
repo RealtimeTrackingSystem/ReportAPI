@@ -14,6 +14,7 @@ clientRoute.post('/api/clients',
   handlers.clients.addClient.addOrgToScope,
   handlers.clients.addClient.saveOrgToDb,
   handlers.clients.addClient.saveClientToDb,
+  handlers.clients.addClient.sendInitialEmail,
   handlers.clients.addClient.respond
 );
 

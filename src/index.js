@@ -5,6 +5,12 @@ const validator = require('express-validator');
 const morgan = require('morgan');
 const logger = require('morgan');
 
+// loading .env file for non production env
+/* istanbul ignore next */
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').load();
+}
+
 const routes = require('./routes');
 const DB = require('./models');
 const CONFIG = require('./config');
@@ -12,9 +18,15 @@ const lib = require('./lib');
 
 // set up express app
 const app = express();
-const config = CONFIG[process.env.NODE_ENV || 'development'];
+const env = process.env.NODE_ENV;
+const config = CONFIG[env];
 
 // connect MongoDB
+require('./models');
+/* istanbul ignore next */
+if (config.REDIS_URL) {
+  require('./lib/cache');
+}
 mongoose.connect(config.DATABASE, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
@@ -29,7 +41,7 @@ app.use(morgan('combined'));
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Api-Key');
   next();
 });
 
@@ -46,6 +58,7 @@ app.use(validator({
 app.use(function (req, res, next) {
   req.logger = {};
   req.logger = lib.logger;
+  req.mailer = lib.mailer;
   req.$scope = {};
   req.DB = DB;
   next();

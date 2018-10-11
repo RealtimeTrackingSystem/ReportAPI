@@ -1,5 +1,5 @@
-const reports = require('./reports');
 
 module.exports = {
-  reports
+  clients: require('./clients'),
+  reports: require('./reports')
 };

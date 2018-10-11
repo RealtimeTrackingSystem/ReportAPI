@@ -3,48 +3,63 @@ const Report = DB.Report;
 
 const all = [
   new Report({
-    title: 'Title 1',
-    description: 'Description 1',
-    location: 'Location 1',
-    long: 45.4,
-    lat: 50.2,
-    _reporter: '5b505a9915a1fe228326cda4',
-    _host: '5b505b9f936f9222cef28ff4',
-    reportCoordinates: {
-      type: 'Point',
-      coordinates: [45.5, 50.2]
+    '_id': '5b56c6ec58d80a0f6404cf93',
+    'reportCoordinates': {
+      'type': 'Point',
+      'coordinates': [
+        23424,
+        23234
+      ]
     },
-    tags: [
-      'test',
-      'title'
+    'status': 'NEW',
+    'people': [
+      '5b56c6ec58d80a0f6404cf94'
     ],
-    people: [],
-    medias: [],
-    properties: [],
-    createdAt: new Date(),
-    updatedAt: new Date()
+    'properties': [
+      '5b56c6ec58d80a0f6404cf95'
+    ],
+    'medias': [],
+    'tags': [
+      'sample2',
+      '5',
+      'Ikot'
+    ],
+    'title': 'Sample5 Report',
+    'description': 'Sample5 Description',
+    'location': 'Sample5 Location',
+    'long': 23424,
+    'lat': 23234,
+    'createdAt': '2018-07-24T06:27:56.141Z',
+    'updatedAt': '2018-07-24T06:27:56.141Z'
   }),
   new Report({
-    title: 'Title 1',
-    description: 'Description 1',
-    location: 'Location 1',
-    long: 45.4,
-    lat: 50.2,
-    _reporter: '5b505a9915a1fe228326cda4',
-    _host: '5b505b9f936f9222cef28ff4',
-    reportCoordinates: {
-      type: 'Point',
-      coordinates: [45.5, 50.2]
+    '_id': '5b56c5f625a2f60f3b2f7489',
+    'reportCoordinates': {
+      'type': 'Point',
+      'coordinates': [
+        23424,
+        23234
+      ]
     },
-    tags: [
-      'test',
-      'title'
+    'status': 'NEW',
+    'people': [
+      '5b56c5f625a2f60f3b2f748a'
     ],
-    people: [],
-    medias: [],
-    properties: [],
-    createdAt: new Date(),
-    updatedAt: new Date()
+    'properties': [
+      '5b56c5f625a2f60f3b2f748b'
+    ],
+    'medias': [],
+    'tags': [
+      'sample2',
+      '4'
+    ],
+    'title': 'Sample4 Report',
+    'description': 'Sample4 Description',
+    'location': 'Sample4 Location',
+    'long': 23424,
+    'lat': 23234,
+    'createdAt': '2018-07-24T06:23:50.604Z',
+    'updatedAt': '2018-07-24T06:23:50.604Z'
   })
 ];
 
