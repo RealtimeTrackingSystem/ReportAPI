@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: report-api
-          image: johnhigginsavila/report-api:1.0.12
+          image: johnhigginsavila/report-api
           ports:
             - containerPort: 5000
           env:
