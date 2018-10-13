@@ -3,3 +3,4 @@
 /.nyc_output
 .env
 *.log
+service-account.json
