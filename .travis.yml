@@ -1,0 +1,18 @@
+sudo: required
+# docker run -it -v $(pwd):/app ruby:2.3 sh
+services:
+  - docker
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t johnhigginsavila/report-api-test -f Dockerfile.dev .
+script:
+  - docker run johnhigginsavila/report-api-test npm run test
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
