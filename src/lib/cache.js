@@ -2,10 +2,14 @@ const mongoose = require('mongoose');
 const redis = require('redis');
 const Promise = require('bluebird');
 
-const CONFIG = require('../config')[process.env.NODE_MODULES || 'development'];
+const CONFIG = require('../config')[process.env.NODE_ENV || 'development'];
 
-const redisURL = CONFIG.REDIS_URL;
-const client = redis.createClient(redisURL);
+
+const client = redis.createClient({
+  host: CONFIG.redis.host,
+  port: CONFIG.redis.port,
+  retry_strategy: () => 1000
+});
 client.get = Promise.promisify(client.get);
 
 const exec = mongoose.Query.prototype.exec;

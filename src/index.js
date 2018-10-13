@@ -7,9 +7,9 @@ const logger = require('morgan');
 
 // loading .env file for non production env
 /* istanbul ignore next */
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load();
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').load();
+// }
 
 const routes = require('./routes');
 const DB = require('./models');
@@ -24,18 +24,23 @@ const config = CONFIG[env];
 // connect MongoDB
 require('./models');
 /* istanbul ignore next */
-if (config.REDIS_URL) {
+if (config.redis.port && config.redis.host) {
   require('./lib/cache');
 }
-mongoose.connect(config.DATABASE, { useNewUrlParser: true });
-mongoose.Promise = global.Promise;
 
-const PORT = process.env.PORT || 5000;
+const connectionString = 'mongodb://' + config.db.HOST + ':' + config.db.PORT + '/' + config.db.DATABASE;
+console.log('connection string: ', connectionString);
+mongoose.connect(connectionString, { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
 
 app.DB = DB;
 
+const PORT = process.env.PORT || 5000;
+
 app.use(logger(config.LOG.env));
-app.use(morgan('combined'));
+if (process.env.NODE_ENV.indexOf('test') < 0) {
+  app.use(morgan('combined'));
+}
 
 // Cors
 app.use(function (req, res, next) {
@@ -69,6 +74,11 @@ app.use(function (req, res, next) {
 routes(app);
 
 // listen for requests
+
+app.get('/echo', function (req, res) {
+  res.send('SUCCESS!');
+});
+
 app.listen(PORT, () => {
   console.log(`Now listening on port ${PORT}`);
 });

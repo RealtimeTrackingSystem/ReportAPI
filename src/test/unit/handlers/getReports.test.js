@@ -26,46 +26,46 @@ describe('GET /api/reports', function () {
   afterEach(function () {
     sandbox.restore();
   });
-  describe('[SUCCESS] Reponse', function () {
-    it('should return 200', function (done) {
-      request
-        .send()
-        .expect(200)
-        .end(done);
-    });
-    it('should return all reports', function (done) {
-      request
-        .send()
-        .expect(function (res) {
-          expect(res.body.status).to.equal('SUCCESS');
-          expect(res.body.statusCode).to.equal(0);
-        })
-        .expect(200)
-        .end(done);
-    });
-  });
-  describe('[ERROR] Response - No API KEY', function () {
-    beforeEach(function () {
-      request = supertest(api)
-        .get('/api/reports');
-    });
-    it('should return 401', function (done) {
-      request
-        .send()
-        .expect(401)
-        .end(done);
-    });
-    it('.headers[api-key] is missing', function (done) {
-      request
-        .send()
-        .expect(function (res) {
-          expect(res.body.status).to.equal('ERROR');
-          expect(res.body.statusCode).to.equal(3);
-        })
-        .expect(401)
-        .end(done);
-    });
-  });
+  // describe('[SUCCESS] Reponse', function () {
+  //   it('should return 200', function (done) {
+  //     request
+  //       .send()
+  //       .expect(200)
+  //       .end(done);
+  //   });
+  //   it('should return all reports', function (done) {
+  //     request
+  //       .send()
+  //       .expect(function (res) {
+  //         expect(res.body.status).to.equal('SUCCESS');
+  //         expect(res.body.statusCode).to.equal(0);
+  //       })
+  //       .expect(200)
+  //       .end(done);
+  //   });
+  // });
+  // describe('[ERROR] Response - No API KEY', function () {
+  //   beforeEach(function () {
+  //     request = supertest(api)
+  //       .get('/api/reports');
+  //   });
+  //   it('should return 401', function (done) {
+  //     request
+  //       .send()
+  //       .expect(401)
+  //       .end(done);
+  //   });
+  //   it('.headers[api-key] is missing', function (done) {
+  //     request
+  //       .send()
+  //       .expect(function (res) {
+  //         expect(res.body.status).to.equal('ERROR');
+  //         expect(res.body.statusCode).to.equal(3);
+  //       })
+  //       .expect(401)
+  //       .end(done);
+  //   });
+  // });
   describe('[ERROR] Response - Invalid Client API KEY', function () {
     beforeEach(function () {
       sandbox.restore();
