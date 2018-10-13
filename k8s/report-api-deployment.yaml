@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: report-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: report-api
+  template:
+    metadata:
+      labels:
+        component: report-api
+    spec:
+      containers:
+        - name: report-api
+          image: johnhigginsavila/report-api:1.0.12
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: DB_HOST
+              value: mongo-cluster-ip-service
+            - name: DB_PORT
+              value: '27017'
+            - name: DATABASE
+              value: 'reportApiDb'
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: 'root'
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: password
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sendgrid
+                  key: SENDGRID_API
