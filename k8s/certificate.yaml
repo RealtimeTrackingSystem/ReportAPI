@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: info‐manila‐real-time‐reporting-com-tls
+spec:
+  secretName: info‐manila‐real-time‐reporting.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIsuer
+  commonName: info‐manila‐real-time‐reporting.com
+  dnsNames:
+    - info‐manila‐real-time‐reporting.com
+    - www.info‐manila‐real-time‐reporting.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - info‐manila‐real-time‐reporting.com
+          - www.info‐manila‐real-time‐reporting.com
