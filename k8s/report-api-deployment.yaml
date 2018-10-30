@@ -47,10 +47,10 @@ spec:
             - name: CLOUDINARY_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cloudinary
-                  key: CLOUDINARY_CLOUD_NAME
+                  name: cloudinary-api
+                  key: CLOUDINARY_API_KEY
             - name: CLOUDINARY_API_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: cloudinary
-                  key: CLOUDINARY_CLOUD_NAME
+                  name: cloudinary-secret
+                  key: CLOUDINARY_API_SECRET
