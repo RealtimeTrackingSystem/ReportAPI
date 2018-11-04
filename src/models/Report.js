@@ -97,7 +97,11 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   if (resources.indexOf('medias') > -1) {
     ReportQuery.populate('medias');
   }
-  return ReportQuery.skip(offset).limit(allowedLimit).sort('-createdAt');
+  if (limit) {
+    return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
+  } else {
+    return ReportQuery.skip(offset).sort('-updatedAt');
+  }
 };
 
 ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
