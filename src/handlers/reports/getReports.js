@@ -43,6 +43,16 @@ function addTagsToWhereClause (req, res, next) {
   next();
 }
 
+function addOtherOptionsOnWhereClause (req, res, next) {
+  const where = req.$scope.whereClause || {};
+  if (!req.query.reporter) {
+    return next();
+  }
+  where._reporter = req.query.reporter;
+  req.$scope.whereClause = where;
+  next();
+}
+
 function getReports (req, res, next) {
   const limit = parseInt(req.query.limit) || 30;
   const page = parseInt(req.query.page) || 0;
@@ -93,11 +103,13 @@ function getReportCount (req, res, next) {
 }
 
 function respond (req, res) {
+  const reports = req.$scope.reports;
+  
   const result = {
     status: 'SUCCESS',
     statusCode: 0,
     httpCode: 200,
-    reports: req.$scope.reports,
+    reports: reports,
     count: req.$scope.reportCount
   };
   req.logger.info(result, 'GET /api/reports');
@@ -107,6 +119,7 @@ function respond (req, res) {
 module.exports = {
   validateQuery,
   addTagsToWhereClause,
+  addOtherOptionsOnWhereClause,
   getReports,
   getReportCount,
   respond
