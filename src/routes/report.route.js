@@ -18,6 +18,7 @@ reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.logActivity,
   handlers.reports.getReports.validateQuery,
   handlers.reports.getReports.addTagsToWhereClause,
+  handlers.reports.getReports.addOtherOptionsOnWhereClause,
   handlers.reports.getReports.getReports,
   handlers.reports.getReports.getReportCount,
   handlers.reports.getReports.respond);
