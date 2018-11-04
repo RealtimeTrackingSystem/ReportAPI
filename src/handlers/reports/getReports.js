@@ -54,7 +54,7 @@ function addOtherOptionsOnWhereClause (req, res, next) {
 }
 
 function getReports (req, res, next) {
-  const limit = parseInt(req.query.limit) || 30;
+  const limit = parseInt(req.query.limit) || null;
   const page = parseInt(req.query.page) || 0;
   const where = req.$scope.whereClause || {};
   const resources
