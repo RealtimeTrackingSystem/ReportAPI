@@ -52,6 +52,7 @@ function addOtherOptionsOnWhereClause (req, res, next) {
   if (req.query.host) {
     where._host = req.query.host;
   }
+
   req.$scope.whereClause = where;
   next();
 }
