@@ -45,10 +45,13 @@ function addTagsToWhereClause (req, res, next) {
 
 function addOtherOptionsOnWhereClause (req, res, next) {
   const where = req.$scope.whereClause || {};
-  if (!req.query.reporter) {
-    return next();
+  if (req.query.reporter) {
+    where._reporter = req.query.reporter;
   }
-  where._reporter = req.query.reporter;
+
+  if (req.query.host) {
+    where._host = req.query.host;
+  }
   req.$scope.whereClause = where;
   next();
 }
