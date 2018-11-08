@@ -21,3 +21,7 @@ spec:
             backend:
               serviceName: middleware-api-cluster-ip-service
               servicePort: 3000
+          - path: /database/
+            backend:
+              serviceName: mongo-cluster-ip-service
+              servicePort: 27017
