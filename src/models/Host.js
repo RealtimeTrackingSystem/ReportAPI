@@ -69,10 +69,14 @@ HostSchema.statics.add = function (host) {
   return newHost.save();
 };
 
-HostSchema.statics.findPaginated = function (query = {}, page, limit) {
+HostSchema.statics.findPaginated = function (query = {}, page = null, limit = null) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
-  return Host.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+  if (limit) {
+    return Host.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+  } else {
+    return Host.find(query).sort('-createdAt');
+  }
 };
 
 const Host = mongoose.model('Host', HostSchema);
