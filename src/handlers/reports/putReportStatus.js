@@ -1,4 +1,5 @@
 const lib = require('../../lib');
+const mailtemplates = require('../../assets/mailtemplates');
 
 function validateBody (req, res, next) {
   const schema = {
@@ -17,7 +18,42 @@ function validateBody (req, res, next) {
   } else {
     return next();
   }
+}
 
+function checkReport (req, res, next) {
+  const reportId = req.params.reportId;
+  return req.DB.Report.findOne({ _id: reportId })
+    .populate('_reporter')
+    .populate('_host')
+    .then(function (report) {
+      if (!report) {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Parameter: Report ID - Not Existing'
+        };
+        req.logger.warn(error, 'PUT /api/reports/status/:reportId');
+        return res.status(error.statusCode).send(error);
+      }
+      req.$scope.reporter = report._reporter;
+      console.log(report);
+      req.$scope.host = report._host;
+      req.$scope.report = report;
+      next();
+    })
+    .catch(function (err) {
+      if (err.httpCode) {
+        return res.status(err.httpCode).send(err);
+      }
+      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      res.status(500).send({
+        status: 'ERROR',
+        statusCode: 1,
+        httpCode: 500,
+        message: 'Internal Server Error'
+      });
+    });
 }
 
 function validateStatus (req, res, next) {
@@ -64,6 +100,26 @@ function logic (req, res, next) {
     });
 }
 
+function sendEmail (req, res, next) {
+  const { reporter, host, report } = req.$scope;
+  const reporterNotif = mailtemplates.reporterReportUpdate(report, reporter);
+  const hostNotif = mailtemplates.hostReportUpdate(report, host);
+  const mails = [
+    { receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: reporterNotif },
+    { receiver: host.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: hostNotif }
+  ];
+  return req.mailer.bulkSimpleMail(mails)
+    .then(function (results) {
+      req.$scope.sentMails = results;
+      req.logger.info(results, 'PUT /api/reports/status/:reportId');
+      next();
+    })
+    .catch(function (error) {
+      req.logger.error(error, 'PUT /api/reports/status/:reportId');
+      next();
+    });
+}
+
 function respond (req, res) {
   res.status(201).send({
     status: 'SUCCESS',
@@ -75,7 +131,9 @@ function respond (req, res) {
 
 module.exports = {
   validateBody,
+  checkReport,
   validateStatus,
   logic,
+  sendEmail,
   respond
 };
