@@ -21,7 +21,7 @@ const HostSchema = new Schema({
   region: { type: String },
   country: { type: String },
   zip: { type: String },
-  profilePic: { type: Types.ObjectId, ref: 'Media' },
+  profilePicture: { type: Types.ObjectId, ref: 'Picture' },
   category: { type: Types.ObjectId, ref: 'Category' }
 }, { timestamps: true });
 
@@ -45,7 +45,8 @@ HostSchema.statics.hydrate = function (host) {
     region: host.region,
     country: host.country,
     zip: host.zip,
-    profilePic: host.profilePic
+    profilePicture: host.profilePicture,
+    category: host.category
   });
 };
 
@@ -69,7 +70,8 @@ HostSchema.statics.add = function (host) {
     region: host.region,
     country: host.country,
     zip: host.zip,
-    profilePic: host.profilePic
+    profilePicture: host.profilePicture,
+    category: host.category
   });
   return newHost.save();
 };

@@ -50,6 +50,7 @@ reportRoute.post('/api/reports',
   handlers.reports.createReport.savePropertiesToDB,
   handlers.reports.createReport.saveReportToClientReport,
   handlers.reports.createReport.saveReportToDB,
+  handlers.reports.createReport.sendEmail,
   handlers.reports.createReport.respond);
 
 reportRoute.get('/api/reports/:reportId',

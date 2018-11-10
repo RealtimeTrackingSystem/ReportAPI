@@ -27,6 +27,9 @@ const ReportSchema = new Schema({
   medias: [{
     type: Types.ObjectId, ref: 'Media'
   }],
+  attachments: [{
+    type: Types.ObjectId, ref: 'Attachment'
+  }],
   tags: [String],
   duplicates: [{
     type: Types.ObjectId, ref: 'Report'
@@ -199,8 +202,6 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, reso
     return ReportQuery.skip(offset).sort('-updatedAt');
   }
 };
-
-
 
 const Report = mongoose.model('Report', ReportSchema);
 

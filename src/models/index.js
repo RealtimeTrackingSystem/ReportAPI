@@ -8,6 +8,8 @@ const Report = require('./Report');
 const Reporter = require('./Reporter');
 const Host = require('./Host');
 const Category = require('./Category');
+const Picture = require('./Picture');
+const Attachment = require('./Attachment');
 
 module.exports = {
   Client,
@@ -19,5 +21,7 @@ module.exports = {
   Report,
   Reporter,
   Host,
-  Category
+  Category,
+  Picture,
+  Attachment
 };
