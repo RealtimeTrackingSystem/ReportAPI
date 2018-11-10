@@ -1,13 +1,31 @@
 const sgMail = require('@sendgrid/mail');
 const config = require('../config');
 const CONFIG = config[process.env.NODE_ENV || 'development'];
+const Promise = require('bluebird');
 
 // for costumized mails
 const sg = require('sendgrid')(CONFIG.SENDGRID.SENDGRID_API_KEY);
 const sgMailHelper = require('sendgrid').mail;
-const Promise = require('bluebird');
 
-function simpleMail (sender, receiver, subject, htmlMessage)  {
+const internals = {};
+internals.send = (msg) => {
+  return new Promise((resolve) => {
+    sgMail.setApiKey(CONFIG.SENDGRID.SENDGRID_API_KEY);
+    sgMail.send(msg)
+      .then((result) => {
+        const res = result || {};
+        res.success = true;
+        resolve(res);
+      })
+      .catch((error) => {
+        const res = error || {};
+        res.success = false;
+        resolve(res);
+      });
+  });
+};
+
+function simpleMail (sender, receiver, subject, htmlMessage, cc = null)  {
   const msg = {
     to: receiver,
     from: sender,
@@ -16,6 +34,19 @@ function simpleMail (sender, receiver, subject, htmlMessage)  {
   };
   sgMail.setApiKey(CONFIG.SENDGRID.SENDGRID_API_KEY);
   return sgMail.send(msg);
+}
+
+function bulkSimpleMail (emails) {
+  const messages = emails.map((email) => {
+    return {
+      to: email.receiver,
+      from: email.sender,
+      subject: email.subject,
+      html: email.htmlMessage
+    };
+  });
+
+  return Promise.map(messages, internals.send);
 }
 
 function mailWithCC (sender, receiver, subject, htmlMessage, cc, senderName) {
@@ -39,5 +70,6 @@ function mailWithCC (sender, receiver, subject, htmlMessage, cc, senderName) {
 
 module.exports = {
   simpleMail,
+  bulkSimpleMail,
   mailWithCC
 };

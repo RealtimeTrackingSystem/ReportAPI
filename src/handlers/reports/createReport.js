@@ -1,4 +1,6 @@
 const lib = require('../../lib');
+const mailtemplates = require('../../assets/mailtemplates');
+
 
 function validateBody (req, res, next) {
   const schema = {
@@ -359,6 +361,29 @@ function saveReportToClientReport (req, res, next) {
     });
 }
 
+function sendEmail (req, res, next) {
+  const reporter = req.$scope.reporter;
+  const host = req.$scope.host;
+  const report = req.$scope.newReport;
+
+  const reporterNotif = mailtemplates.reporterNewReport(report, reporter);
+  const hostNotif = mailtemplates.hostNewReport(report, host);
+  const mails = [
+    { receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'New Report: ' + report.title, htmlMessage: reporterNotif },
+    { receiver: host.email, sender: 'report-api-team@noreply', subject: 'New Report: ' + report.title, htmlMessage: hostNotif }
+  ];
+  return req.mailer.bulkSimpleMail(mails)
+    .then(function (results) {
+      req.$scope.sentMails = results;
+      req.logger.info(results, 'POST /api/reports');
+      next();
+    })
+    .catch(function (error) {
+      req.logger.error(error, 'POST /api/reports');
+      next();
+    });
+}
+
 function respond (req, res) {
   const success = {
     status: 'SUCCESS',
@@ -366,7 +391,7 @@ function respond (req, res) {
     httpCode: 201,
     report: req.$scope.newReport._id
   };
-  req.logger.info('POST /api/reports', success);
+  req.logger.info(success, 'POST /api/reports');
   res.status(201).send(success);
 }
 
@@ -385,5 +410,6 @@ module.exports = {
   addCategoryToScope,
   saveReportToDB,
   saveReportToClientReport,
+  sendEmail,
   respond
 };

@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const ReporterSchema = new Schema({
   fname: { type: String },
   lname: { type: String },
+  email: { type: String },
   alias: { type: String },
   age: { type: Number },
   street: { type: String },
@@ -11,13 +12,15 @@ const ReporterSchema = new Schema({
   city: { type: String },
   region: { type: String },
   country: { type: String },
-  zip: { type: String }
+  zip: { type: String },
+  profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture' }
 }, { timestamps: true });
 
 ReporterSchema.statics.add = function (reporter) {
   const newReporter = new Reporter({
     fname: reporter.fname,
     lname: reporter.lname,
+    email: reporter.email,
     alias: reporter.alias,
     age: reporter.age,
     street: reporter.street,
@@ -25,7 +28,8 @@ ReporterSchema.statics.add = function (reporter) {
     city: reporter.city,
     region: reporter.region,
     country: reporter.country,
-    zip: reporter.zip
+    zip: reporter.zip,
+    profilePicture: reporter.profilePicture
   });
   return newReporter.save();
 };
@@ -34,6 +38,7 @@ ReporterSchema.statics.hydrate = function (reporter) {
   return new Reporter({
     fname: reporter.fname,
     lname: reporter.lname,
+    email: reporter.email,
     alias: reporter.alias,
     age: reporter.age,
     street: reporter.street,
@@ -41,7 +46,8 @@ ReporterSchema.statics.hydrate = function (reporter) {
     city: reporter.city,
     region: reporter.region,
     country: reporter.country,
-    zip: reporter.zip
+    zip: reporter.zip,
+    profilePicture: reporter.profilePicture
   });
 };
 
