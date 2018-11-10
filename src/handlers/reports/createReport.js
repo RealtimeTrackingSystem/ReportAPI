@@ -369,8 +369,8 @@ function sendEmail (req, res, next) {
   const reporterNotif = mailtemplates.reporterNewReport(report, reporter);
   const hostNotif = mailtemplates.hostNewReport(report, host);
   const mails = [
-    { receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'New Report: ' + report.title, htmlMessage: reporterNotif },
-    { receiver: host.email, sender: 'report-api-team@noreply', subject: 'New Report: ' + report.title, htmlMessage: hostNotif }
+    { receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: reporterNotif },
+    { receiver: host.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: hostNotif }
   ];
   return req.mailer.bulkSimpleMail(mails)
     .then(function (results) {

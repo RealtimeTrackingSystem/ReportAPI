@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
 
-const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID'];
+const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID', 'INVALID'];
 const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
 
 const ReportSchema = new Schema({
@@ -11,9 +11,9 @@ const ReportSchema = new Schema({
   location: { type: String },
   long: { type: Number },
   lat: { type: Number },
-  _reporter: { type:Types.ObjectId, ref: 'Reporter', required: true },
+  _reporter: { type: Types.ObjectId, ref: 'Reporter', required: true },
   _host: { type: Types.ObjectId, ref: 'Host' },
-  status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID'], default: 'NEW' },
+  status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID', 'INVALID'], default: 'NEW' },
   reportCoordinates: {
     type: {type: String, enum: 'Point', default: 'Point'},
     coordinates: { type: [Number], default: [0, 0]}
@@ -123,7 +123,7 @@ ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Report ID'
+          message: 'Invalid Parameter: Report ID'
         };
         throw error;
       }
@@ -132,7 +132,16 @@ ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Status - Unknown Status [' + status + ']'
+          message: 'Invalid Parameter: Status - Unknown Status [' + status + ']'
+        };
+        throw error;
+      }
+      if (report.status === 'VOID') {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Parameter: Status - Status already VOID'
         };
         throw error;
       }
@@ -142,7 +151,7 @@ ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Status'
+          message: 'Invalid Parameter: Status'
         };
         throw error;
       }

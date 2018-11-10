@@ -20,7 +20,7 @@ function sendAPIKey (client, organization) {
 function reporterNewReport (report, reporter) {
   const mailString 
     = `
-    <p>Hi ${reporter.gender == 'MALE' ? 'Mr.' : 'Ms.'} ${reporter.fname},</p>
+    <p>Good Day ${reporter.gender == 'M' ? 'Mr.' : 'Ms.'} ${reporter.fname},</p>
     </br>
     <p>Your Report Has Been Sent</p>
     <p>Report Details: </p>
@@ -59,8 +59,52 @@ function hostNewReport (report, host) {
   return mailString;
 }
 
+function reporterReportUpdate (report, reporter) {
+  const mailString
+    = `
+    <p>Good Day ${reporter.gender == 'M' ? 'Mr.' : 'Ms.'} ${reporter.fname},</p>
+    </br>
+    <p>Your Report Has Been Updated to: ${report.status}</p>
+    <p>Report Details: </p>
+    <p>Title: ${report.title}</p>
+    <p>Description: ${report.description}</p>
+    <p>Location: ${report.location}</p>
+    <p>Urgency: ${report.urgency}</p>
+    <p>Coordinates: (${report.long}, ${report.lat})</p>
+    </br>
+    </br>
+    <p>Thank you very much</p>
+    <p>Sincerely,</p>
+    <p>REPORT API</p>
+    `;
+  return mailString;
+}
+
+function hostReportUpdate (report, host) {
+  const mailString
+    = `
+    <p>Greetings HOST: ${host.name}</p>
+    </br>
+    <p>You have updated the report to: ${report.status}</p>
+    <p>Report Details: </p>
+    <p>Title: ${report.title}</p>
+    <p>Description: ${report.description}</p>
+    <p>Location: ${report.location}</p>
+    <p>Urgency: ${report.urgency}</p>
+    <p>Coordinates: (${report.long}, ${report.lat})</p>
+    </br>
+    </br>
+    <p>Thank you very much</p>
+    <p>Sincerely,</p>
+    <p>REPORT API</p>
+    `;
+  return mailString;
+}
+
 module.exports = {
   sendAPIKey,
   reporterNewReport,
-  hostNewReport
+  hostNewReport,
+  reporterReportUpdate,
+  hostReportUpdate
 };

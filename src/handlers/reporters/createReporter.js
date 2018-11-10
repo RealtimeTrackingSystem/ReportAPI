@@ -26,6 +26,14 @@ function validateBody (req, res, next) {
         errorMessage: 'Invalid Parameter Length: Email'
       }
     },
+    gender: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Gender',
+      isLength: {
+        options: { min: 2, max: 50 },
+        errorMessage: 'Invalid Parameter Length: Email'
+      }
+    },
     alias: {
       optional: true,
       isLength: {

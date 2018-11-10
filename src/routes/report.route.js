@@ -21,7 +21,9 @@ reportRoute.put('/api/reports/status/:reportId',
   handlers.authentication.clientAuth.logActivity,
   handlers.reports.putReportStatus.validateBody,
   handlers.reports.putReportStatus.validateStatus,
+  handlers.reports.putReportStatus.checkReport,
   handlers.reports.putReportStatus.logic,
+  handlers.reports.putReportStatus.sendEmail,
   handlers.reports.putReportStatus.respond);
 
 reportRoute.get('/api/reports',
