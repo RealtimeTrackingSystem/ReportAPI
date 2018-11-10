@@ -43,7 +43,8 @@ function validateBody (req, res, next) {
       }
     },
     hostId: {
-      notEmpty: false,
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Host ID',
       isLength: {
         options: { max: 255 },
         errorMessage: 'Invalid Parameter Length: Location'
@@ -80,6 +81,10 @@ function validateBody (req, res, next) {
       isArray: {
         errorMessage: 'Invalid Parameter: Tags'
       }
+    },
+    category: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Category'
     }
   };
   req.checkBody(schema);
@@ -93,6 +98,29 @@ function validateBody (req, res, next) {
     return next();
   }
 
+}
+
+function checkDuplicate (req, res, next) {
+  const title = req.body.title;
+  return req.DB.Report.findOne({ title: title })
+    .then(function (report) {
+      if (report) {
+        const error = {
+          status: 'ERROR',
+          statusCode: 2,
+          httpCode: 400,
+          message: 'Invalid Parameter: Title - Duplicate'
+        };
+        res.status(error.httpCode).send(error);
+      } else {
+        next();
+      }
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error(error, 'POST /api/reports');
+      res.status(500).send(err);
+    });
 }
 
 function validateHost (req, res, next) {
@@ -156,16 +184,44 @@ function validateReporter (req, res, next) {
     });
 }
 
+function addCategoryToScope (req, res, next) {
+  const categoryName = req.body.category;
+  return req.DB.Category.findOne({ name: categoryName })
+    .then(function (category) {
+      if (!category) {
+        return req.DB.Category.add({ name: categoryName });
+      } else {
+        return category;
+      }
+    })
+    .then(function (category) {
+      req.$scope.category = category;
+      next();
+    })
+    .catch(function (error) {
+      const err = lib.errorResponses.internalServerError('Internale Server Error');
+      req.logger.error(error, 'POST /api/reports');
+      res.status(500).send(err);
+    });
+}
+
 function addReportToScope (req, res, next) {
+  const tags = req.body.tags || [];
+  const host = req.$scope.host;
+  const category = req.$scope.category;
+  if (host) {
+    tags.concat(host.defaultTags);
+  }
   const report = {
     title: req.body.title,
     description: req.body.description,
     location: req.body.location,
     long: req.body.long,
     lat: req.body.lat,
-    tags: req.body.tags,
+    tags: tags,
     _reporter: req.body.reporterId,
-    _host: req.body.hostId
+    _host: req.body.hostId,
+    category: category._id
   };
   req.$scope.preparedReport = req.DB.Report.hydrate(report);
   next();
@@ -316,6 +372,7 @@ function respond (req, res) {
 
 module.exports = {
   validateBody,
+  checkDuplicate,
   validateReporter,
   validateHost,
   addPropertiesToScope,
@@ -325,6 +382,7 @@ module.exports = {
   addPeopleToScope,
   savePeopleToDB,
   addReportToScope,
+  addCategoryToScope,
   saveReportToDB,
   saveReportToClientReport,
   respond

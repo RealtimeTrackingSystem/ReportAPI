@@ -7,7 +7,18 @@ const handlers = require('../handlers');
 
 const reportRoute = Router();
 
+reportRoute.get('/api/reports/search/:searchString',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.searchReports.validateQuery,
+  handlers.reports.searchReports.validateParams,
+  handlers.reports.searchReports.getReports,
+  handlers.reports.searchReports.getReportCount,
+  handlers.reports.searchReports.respond);
+
 reportRoute.put('/api/reports/status/:reportId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
   handlers.reports.putReportStatus.validateBody,
   handlers.reports.putReportStatus.validateStatus,
   handlers.reports.putReportStatus.logic,
@@ -26,6 +37,10 @@ reportRoute.get('/api/reports',
 reportRoute.post('/api/reports',
   handlers.authentication.clientAuth.authenticate,
   handlers.reports.createReport.validateBody,
+  handlers.reports.createReport.checkDuplicate,
+  handlers.reports.createReport.validateReporter,
+  handlers.reports.createReport.validateHost,
+  handlers.reports.createReport.addCategoryToScope,
   handlers.reports.createReport.addReportToScope,
   handlers.reports.createReport.addMediasToScope,
   handlers.reports.createReport.saveMediasToDB,
