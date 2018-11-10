@@ -7,6 +7,12 @@ const handlers = require('../handlers');
 
 const hostRoute = Router();
 
+hostRoute.get('/api/hosts/search/:searchString',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.hosts.searchHost.validateParams,
+  handlers.hosts.searchHost.logic,
+  handlers.hosts.searchHost.respond);
+
 hostRoute.get('/api/hosts',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.getHosts.validateQuery,

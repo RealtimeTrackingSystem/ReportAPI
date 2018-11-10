@@ -1,5 +1,6 @@
 module.exports = {
   getHosts: require('./getHosts'),
   getHostById: require('./getHostById'),
-  createHost: require('./createHost')
+  createHost: require('./createHost'),
+  searchHost: require('./searchHost')
 };

@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const { Types } = Schema;
 
 const HostSchema = new Schema({
-  name: { type: String, unique: true, required: true },
+  name: { type: String, unique: false, required: true },
   email: { type: String, unique: true, required: true  },
   location: { type: String },
   description: { type: String },
@@ -19,7 +20,9 @@ const HostSchema = new Schema({
   city: { type: String },
   region: { type: String },
   country: { type: String },
-  zip: { type: String }
+  zip: { type: String },
+  profilePic: { type: Types.ObjectId, ref: 'Media' },
+  category: { type: Types.ObjectId, ref: 'Category' }
 }, { timestamps: true });
 
 HostSchema.statics.hydrate = function (host) {
@@ -41,7 +44,8 @@ HostSchema.statics.hydrate = function (host) {
     city: host.city,
     region: host.region,
     country: host.country,
-    zip: host.zip
+    zip: host.zip,
+    profilePic: host.profilePic
   });
 };
 
@@ -64,7 +68,8 @@ HostSchema.statics.add = function (host) {
     city: host.city,
     region: host.region,
     country: host.country,
-    zip: host.zip
+    zip: host.zip,
+    profilePic: host.profilePic
   });
   return newHost.save();
 };
@@ -77,6 +82,16 @@ HostSchema.statics.findPaginated = function (query = {}, page = null, limit = nu
   } else {
     return Host.find(query).sort('-createdAt');
   }
+};
+
+HostSchema.statics.search = function (searchString) {
+  return Host.find({
+    $or: [
+      { name: { $regex: searchString, $options: 'i' } },
+      { location: { $regex: searchString, $options: 'i' } },
+      { hostNature: { $regex: searchString, $options: 'i' } }
+    ]
+  });
 };
 
 const Host = mongoose.model('Host', HostSchema);

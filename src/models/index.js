@@ -7,6 +7,7 @@ const Property = require('./Property');
 const Report = require('./Report');
 const Reporter = require('./Reporter');
 const Host = require('./Host');
+const Category = require('./Category');
 
 module.exports = {
   Client,
@@ -17,5 +18,6 @@ module.exports = {
   Property,
   Report,
   Reporter,
-  Host
+  Host,
+  Category
 };
