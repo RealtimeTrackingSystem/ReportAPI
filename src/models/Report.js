@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { Types } = Schema;
+const Promise = require('bluebird');
+const _ = require('lodash');
 
 const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID', 'INVALID'];
 const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
@@ -183,7 +185,12 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, reso
     $or: [
       { title: { $regex: searchString, $options: 'i' } },
       { description: { $regex: searchString, $options: 'i' } },
-      { location: { $regex: searchString, $options: 'i' } }
+      { location: { $regex: searchString, $options: 'i' } },
+      { tags: {
+        $elemMatch: {
+          $in: [searchString]
+        }
+      }}
     ]
   });
   if (resources.indexOf('reporter') > -1) {
@@ -210,6 +217,57 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, reso
   } else {
     return ReportQuery.skip(offset).sort('-updatedAt');
   }
+};
+
+ReportSchema.statics.duplicateReport = function (original, duplicate) {
+
+  return Promise.map([original, duplicate],
+    reportId => Report.findById(reportId)
+      .populate('_host')
+      .populate('_reporter')
+  )
+    .spread((originalReport, duplicateReport) => {
+      if (!originalReport || ! duplicateReport) {
+        throw {
+          success: false,
+          reason: 'Invalid Parameter: Duplicate Object'
+        };
+      }
+      if (duplicateReport.duplicates.length > 0) {
+        throw {
+          success: false,
+          reason: 'Invalid Parameter: Duplicate Report ID'
+        };
+      }
+      if (originalReport.duplicateParent) {
+        throw {
+          success: false,
+          reason: 'Invalid Parameter: Original Report ID'
+        };
+      }
+      if (duplicateReport.duplicateParent) {
+        throw {
+          success: true,
+          reason: 'Report is already set as duplicate'
+        };
+      }
+      let newDuplicates;
+      const duplicated = _.find(originalReport.duplicates, (dup) => {
+        return dup.toString() == duplicateReport._id;
+      });
+      if (duplicated) {
+        newDuplicates = originalReport.duplicates;
+      } else {
+        newDuplicates = originalReport.duplicates.concat([duplicateReport._id]);
+      }
+      const updateOriginal = Report.findByIdAndUpdate(originalReport._id, {
+        duplicates: newDuplicates
+      });
+      const updateDuplicate = Report.findByIdAndUpdate(duplicateReport._id, {
+        duplicateParent: originalReport._id
+      });
+      return Promise.all([updateOriginal, updateDuplicate]);
+    });
 };
 
 const Report = mongoose.model('Report', ReportSchema);

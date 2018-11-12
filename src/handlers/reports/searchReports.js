@@ -91,7 +91,12 @@ function getReportCount (req, res, next) {
     $or: [
       { title: { $regex: searchString, $options: 'i' } },
       { description: { $regex: searchString, $options: 'i' } },
-      { location: { $regex: searchString, $options: 'i' } }
+      { location: { $regex: searchString, $options: 'i' } },
+      { tags: {
+        $elemMatch: {
+          $in: [searchString]
+        }
+      }}
     ]
   })
     .then(function (count) {
