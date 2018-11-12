@@ -223,7 +223,7 @@ function addReportToScope (req, res, next) {
     tags: tags,
     _reporter: req.body.reporterId,
     _host: req.body.hostId,
-    category: category._id
+    _category: category._id
   };
   req.$scope.preparedReport = req.DB.Report.hydrate(report);
   next();

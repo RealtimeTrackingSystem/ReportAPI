@@ -37,7 +37,8 @@ const ReportSchema = new Schema({
     type: Types.ObjectId, ref: 'Report'
   }],
   duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null },
-  urgency: { type: String, enum: [ 'EMERGENCY', 'CRITICAL', 'PRIORITY', 'MEDIUM', 'LOW' ], default: 'LOW' }
+  urgency: { type: String, enum: [ 'EMERGENCY', 'CRITICAL', 'PRIORITY', 'MEDIUM', 'LOW' ], default: 'LOW' },
+  _category: { type: Types.ObjectId, ref: 'Category'}
 }, { timestamps: true });
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
@@ -106,7 +107,7 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   if (resources.indexOf('medias') > -1) {
     ReportQuery.populate('medias');
   }
-  ReportQuery.populate('category');
+  ReportQuery.populate('_category');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
 
@@ -212,6 +213,9 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, reso
   if (resources.indexOf('medias') > -1) {
     ReportQuery.populate('medias');
   }
+  ReportQuery.populate('_category');
+  ReportQuery.populate('duplicates');
+  ReportQuery.populate('duplicateParent');
   if (limit) {
     return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
   } else {
