@@ -7,6 +7,14 @@ const handlers = require('../handlers');
 
 const reportRoute = Router();
 
+reportRoute.post('/api/v1/reports/mass-update-status',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.massStatusUpdate.validateParams,
+  handlers.reports.massStatusUpdate.checkReportsToUpdate,
+  handlers.reports.massStatusUpdate.logic,
+  handlers.reports.massStatusUpdate.respond);
+
 reportRoute.get('/api/reports/search/:searchString',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
