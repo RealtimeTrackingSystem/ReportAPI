@@ -5,5 +5,6 @@ module.exports = {
   createReport: require('./createReport'),
   putReportStatus: require('./putReportStatus'),
   searchReports: require('./searchReports'),
-  postDuplicate: require('./postDuplicate')
+  postDuplicate: require('./postDuplicate'),
+  massStatusUpdate: require('./massStatusUpdate')
 };
