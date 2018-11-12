@@ -26,6 +26,14 @@ reportRoute.put('/api/reports/status/:reportId',
   handlers.reports.putReportStatus.sendEmail,
   handlers.reports.putReportStatus.respond);
 
+reportRoute.post('/api/reports/duplicates',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.postDuplicate.validateParams,
+  handlers.reports.postDuplicate.duplicate,
+  handlers.reports.postDuplicate.sendEmail,
+  handlers.reports.postDuplicate.respond);
+
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
