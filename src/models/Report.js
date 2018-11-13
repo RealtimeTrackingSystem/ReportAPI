@@ -59,7 +59,8 @@ ReportSchema.statics.hydrate = function (report) {
       coordinates: [report.long, report.lat]
     },
     _reporter: report._reporter,
-    _host: report._host
+    _host: report._host,
+    _category: report._category
   });
 };
 
@@ -79,7 +80,8 @@ ReportSchema.statics.add = function (report) {
       coordinates: [report.long, report.lat]
     },
     _reporter: report._reporter,
-    _host: report._host
+    _host: report._host,
+    _category: report._category
   });
   return newReport.save();
 };
