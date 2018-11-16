@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 const { Types } = Schema;
 
 const CategorySchema = new Schema({
-  name: { type: String, unique: true, required: true },
-  description: { type: String }
+  name: { type: String, unique: true, required: true , index: true },
+  description: { type: String, index: true  }
 }, { timestamps: true });
 
 CategorySchema.statics.search = function (searchString) {

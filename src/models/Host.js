@@ -3,26 +3,26 @@ const { Schema } = mongoose;
 const { Types } = Schema;
 
 const HostSchema = new Schema({
-  name: { type: String, unique: false, required: true },
-  email: { type: String, unique: true, required: true  },
-  location: { type: String },
-  description: { type: String },
-  hostNature: { type: String },
-  defaultTags: [String],
-  long: { type: Number },
-  lat: { type: Number },
+  name: { type: String, unique: false, required: true, index: true  },
+  email: { type: String, unique: true, required: true, index: true   },
+  location: { type: String, index: true  },
+  description: { type: String, index: true  },
+  hostNature: { type: String, index: true  },
+  defaultTags: [{ type: String, index: true  }],
+  long: { type: Number, index: true  },
+  lat: { type: Number, index: true  },
   hostCoordinates: {
-    type: {type: String, enum: 'Point', default: 'Point'},
-    coordinates: { type: [Number], default: [0, 0]}
+    type: {type: String, enum: 'Point', default: 'Point', index: true },
+    coordinates: { type: [Number], default: [0, 0], index: true }
   },
-  street: { type: String },
-  barangay: { type: String },
-  city: { type: String },
-  region: { type: String },
-  country: { type: String },
-  zip: { type: String },
-  profilePicture: { type: Types.ObjectId, ref: 'Picture' },
-  category: { type: Types.ObjectId, ref: 'Category' }
+  street: { type: String, index: true  },
+  barangay: { type: String, index: true  },
+  city: { type: String, index: true  },
+  region: { type: String, index: true  },
+  country: { type: String, index: true  },
+  zip: { type: String, index: true  },
+  profilePicture: { type: Types.ObjectId, ref: 'Picture', index: true  },
+  category: { type: Types.ObjectId, ref: 'Category', index: true  }
 }, { timestamps: true });
 
 HostSchema.statics.hydrate = function (host) {

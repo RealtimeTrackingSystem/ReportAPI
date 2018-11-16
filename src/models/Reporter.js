@@ -2,19 +2,19 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ReporterSchema = new Schema({
-  fname: { type: String },
-  lname: { type: String },
-  email: { type: String },
-  alias: { type: String },
-  gender: { type: String, enum: ['M', 'F'], default: 'M'},
-  age: { type: Number },
-  street: { type: String },
-  barangay: { type: String },
-  city: { type: String },
-  region: { type: String },
-  country: { type: String },
-  zip: { type: String },
-  profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture' }
+  fname: { type: String, index: true  },
+  lname: { type: String, index: true  },
+  email: { type: String, index: true  },
+  alias: { type: String, index: true  },
+  gender: { type: String, enum: ['M', 'F'], default: 'M', index: true },
+  age: { type: Number, index: true  },
+  street: { type: String, index: true  },
+  barangay: { type: String, index: true  },
+  city: { type: String, index: true  },
+  region: { type: String, index: true  },
+  country: { type: String, index: true  },
+  zip: { type: String, index: true  },
+  profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture', index: true  }
 }, { timestamps: true });
 
 ReporterSchema.statics.add = function (reporter) {

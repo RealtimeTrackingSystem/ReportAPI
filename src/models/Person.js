@@ -3,12 +3,12 @@ const { Schema } = mongoose;
 const { Types } = Schema;
 
 const PersonSchema = new Schema({
-  _report: { type: Types.ObjectId, ref: 'Report', required: true },
-  fname: { type: String },
-  lname: { type: String },
-  alias: { type: String, required: true },
-  isCulprit: { type: Boolean, default: false },
-  isCasualty: { type: Boolean, default: true }
+  _report: { type: Types.ObjectId, ref: 'Report', required: true, index: true  },
+  fname: { type: String, index: true  },
+  lname: { type: String, index: true  },
+  alias: { type: String, required: true, index: true  },
+  isCulprit: { type: Boolean, default: false, index: true  },
+  isCasualty: { type: Boolean, default: true, index: true  }
 }, { timestamps: true });
 
 PersonSchema.statics.add = function (person) {

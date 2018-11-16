@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const OrganizationSchema = new Schema({
-  name: { type: String, required: true, unique: true },
-  email: { type: String, unique: true, required: true },
-  website: { type: String, required: false },
-  street: { type: String, required: true},
-  barangay: { type: String, required: true},
-  city: { type: String, required: true },
-  region: { type: String, required: true },
-  zip: { type: String, required: true },
-  country: { type: String, default: 'philippines' },
-  description: { type: String, required: true },
-  orgNature: { type: String, required: true }
+  name: { type: String, required: true, unique: true, index: true  },
+  email: { type: String, unique: true, required: true, index: true  },
+  website: { type: String, required: false, index: true  },
+  street: { type: String, required: true, index: true },
+  barangay: { type: String, required: true, index: true },
+  city: { type: String, required: true, index: true  },
+  region: { type: String, required: true, index: true  },
+  zip: { type: String, required: true, index: true  },
+  country: { type: String, default: 'philippines', index: true  },
+  description: { type: String, required: true, index: true  },
+  orgNature: { type: String, required: true, index: true  }
 }, { timestamps: true });
 
 OrganizationSchema.statics.add = function (organization) {

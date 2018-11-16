@@ -8,37 +8,37 @@ const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOI
 const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
 
 const ReportSchema = new Schema({
-  title: { type: String, required: true, unique: true },
-  description: { type: String },
-  location: { type: String },
-  long: { type: Number },
-  lat: { type: Number },
-  _reporter: { type: Types.ObjectId, ref: 'Reporter', required: true },
-  _host: { type: Types.ObjectId, ref: 'Host' },
-  status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID', 'INVALID'], default: 'NEW' },
+  title: { type: String, required: true, unique: true, index: true  },
+  description: { type: String, index: true  },
+  location: { type: String, index: true  },
+  long: { type: Number, index: true  },
+  lat: { type: Number, index: true  },
+  _reporter: { type: Types.ObjectId, ref: 'Reporter', required: true, index: true  },
+  _host: { type: Types.ObjectId, ref: 'Host', index: true  },
+  status: { type: String, enum: [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOID', 'INVALID'], default: 'NEW', index: true  },
   reportCoordinates: {
-    type: {type: String, enum: 'Point', default: 'Point'},
-    coordinates: { type: [Number], default: [0, 0]}
+    type: {type: String, enum: 'Point', default: 'Point', index: true },
+    coordinates: { type: [Number], default: [0, 0], index: true }
   },
   people: [{
-    type: Types.ObjectId, ref: 'Person'
+    type: Types.ObjectId, ref: 'Person', index: true 
   }],
   properties: [{
-    type: Types.ObjectId, ref: 'Property'
+    type: Types.ObjectId, ref: 'Property', index: true 
   }],
   medias: [{
-    type: Types.ObjectId, ref: 'Media'
+    type: Types.ObjectId, ref: 'Media', index: true 
   }],
   attachments: [{
-    type: Types.ObjectId, ref: 'Attachment'
+    type: Types.ObjectId, ref: 'Attachment', index: true 
   }],
   tags: [String],
   duplicates: [{
-    type: Types.ObjectId, ref: 'Report'
+    type: Types.ObjectId, ref: 'Report', index: true 
   }],
-  duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null },
-  urgency: { type: String, enum: [ 'EMERGENCY', 'CRITICAL', 'PRIORITY', 'MEDIUM', 'LOW' ], default: 'LOW' },
-  _category: { type: Types.ObjectId, ref: 'Category'}
+  duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null, index: true  },
+  urgency: { type: String, enum: [ 'EMERGENCY', 'CRITICAL', 'PRIORITY', 'MEDIUM', 'LOW' ], default: 'LOW', index: true  },
+  _category: { type: Types.ObjectId, ref: 'Category', index: true }
 }, { timestamps: true });
 
 ReportSchema.index({reportCoordinate: '2dsphere'});

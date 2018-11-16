@@ -31,4 +31,11 @@ reporterRoute.put('/api/reporters/:reporterId',
   handlers.reporters.updateReporter.logic,
   handlers.reporters.updateReporter.respond);
 
+reporterRoute.put('/api/reporters/profilepic/:reporterId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reporters.updateReporterProfilePic.validateParams,
+  handlers.reporters.updateReporterProfilePic.validateReporter,
+  handlers.reporters.updateReporterProfilePic.logic,
+  handlers.reporters.updateReporterProfilePic.respond);
+
 module.exports = reporterRoute;

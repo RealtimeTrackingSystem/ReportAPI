@@ -5,11 +5,11 @@ const { Types } = Schema;
 const { crypto } = lib;
 
 const ClientSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  subscriptionType: { type: String, enum: ['FREE', 'PAID'], default: 'FREE' },
-  _organization: { type: Types.ObjectId, ref: 'Organization' },
-  password: { type: String },
-  apiKey: { type: String }
+  email: { type: String, required: true, unique: true, index: true  },
+  subscriptionType: { type: String, enum: ['FREE', 'PAID'], default: 'FREE', index: true  },
+  _organization: { type: Types.ObjectId, ref: 'Organization', index: true  },
+  password: { type: String, index: true  },
+  apiKey: { type: String, index: true  }
 }, { timestamps: true });
 
 ClientSchema.statics.add = function (client) {
