@@ -42,11 +42,13 @@ function validateBody (req, res, next) {
       }
     },
     age: {
-      optional: true,
-      isNumber: {
-        options: { min: 0 },
-        errorMessage: 'Invalid Parameter: Age'
-      }
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Age',
+      isInt: {
+        options: { min: 16 },
+        errorMessage: 'Invalid Parameter: Age - Must be 16 +'
+      },
+      toInt: true
     },
     street: {
       notEmpty: true,
@@ -111,21 +113,24 @@ function validateBody (req, res, next) {
 }
 
 function logic (req, res, next) {
-  const reporter = {
-    fname: req.body.fname,
-    lname: req.body.lname,
-    alias: req.body.alias,
-    age: req.body.age,
-    street: req.body.street,
-    barangay: req.body.barangay,
-    city: req.body.city,
-    region: req.body.region,
-    country: req.body.country,
-    zip: req.body.zip
+  const reporter = req.body;
+  const reporterData = {
+    fname: reporter.fname,
+    lname: reporter.lname,
+    email: reporter.email,
+    age: reporter.age,
+    gender: reporter.gender,
+    alias: reporter.alias,
+    street: reporter.street,
+    barangay: reporter.barangay,
+    city: reporter.city,
+    region: reporter.region,
+    country: reporter.country,
+    zip: reporter.zip
   };
-  return req.DB.Reporter.add(reporter)
-    .then(function (reporter) {
-      req.$scope.reporter = reporter;
+  return req.DB.Reporter.add(reporterData)
+    .then(function (r) {
+      req.$scope.reporter = r;
       next();
     })
     .catch(function (error) {
