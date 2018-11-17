@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const PictureSchema = new Schema({
   platform: { type: String, required: true, index: true  },
-  metaData: { type: Object, required: true, index: true  }
+  metaData: { type: Object, required: true }
 }, { timestamps: true });
 
 PictureSchema.statics.add = function (picture) {

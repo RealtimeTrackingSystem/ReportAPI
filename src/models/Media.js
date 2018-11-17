@@ -5,7 +5,7 @@ const { Types } = Schema;
 const MediaSchema = new Schema({
   _report: { type: Types.ObjectId, ref: 'Report', required: true, index: true  },
   platform: { type: String, required: true, index: true },
-  metaData: { type: Object, required: true, index: true  }
+  metaData: { type: Object, required: true }
 }, { timestamps: true });
 
 const Media = mongoose.model('Media', MediaSchema);
