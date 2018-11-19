@@ -22,7 +22,9 @@ const HostSchema = new Schema({
   country: { type: String, index: true  },
   zip: { type: String, index: true  },
   profilePicture: { type: Types.ObjectId, ref: 'Picture', index: true  },
-  category: { type: Types.ObjectId, ref: 'Category', index: true  }
+  category: { type: Types.ObjectId, ref: 'Category', index: true  },
+  isApproved: { type: Boolean, index: true, default: false },
+  _client: { type: Types.ObjectId, ref: 'Client', index: true, required: true }
 }, { timestamps: true });
 
 HostSchema.statics.hydrate = function (host) {
@@ -46,7 +48,8 @@ HostSchema.statics.hydrate = function (host) {
     country: host.country,
     zip: host.zip,
     profilePicture: host.profilePicture,
-    category: host.category
+    category: host.category,
+    _client: host._client
   });
 };
 
@@ -71,7 +74,8 @@ HostSchema.statics.add = function (host) {
     country: host.country,
     zip: host.zip,
     profilePicture: host.profilePicture,
-    category: host.category
+    category: host.category,
+    _client: host._client
   });
   return newHost.save();
 };
@@ -93,6 +97,12 @@ HostSchema.statics.search = function (searchString) {
       { location: { $regex: searchString, $options: 'i' } },
       { hostNature: { $regex: searchString, $options: 'i' } }
     ]
+  });
+};
+
+HostSchema.statics.approve = function (hostId) {
+  return Host.findByIdAndUpdate(hostId, {
+    isApproved: true
   });
 };
 

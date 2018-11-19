@@ -148,6 +148,7 @@ function checkDuplicates (req, res, next) {
 }
 
 function logic (req, res, next) {
+  const client = req.$scope.clientCredentials;
   const host = {
     name: req.body.name,
     email: req.body.email,
@@ -162,7 +163,8 @@ function logic (req, res, next) {
     city: req.body.city,
     region: req.body.region,
     country: req.body.country,
-    zip: req.body.zip
+    zip: req.body.zip,
+    _client: client._id
   };
   return req.DB.Host.add(host)
     .then(function (host) {
