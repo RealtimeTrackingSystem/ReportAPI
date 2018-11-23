@@ -10,6 +10,7 @@ const Host = require('./Host');
 const Category = require('./Category');
 const Picture = require('./Picture');
 const Attachment = require('./Attachment');
+const Note = require('./Note');
 
 module.exports = {
   Client,
@@ -23,5 +24,6 @@ module.exports = {
   Host,
   Category,
   Picture,
-  Attachment
+  Attachment,
+  Note
 };

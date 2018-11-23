@@ -4,13 +4,14 @@ const _ = require('lodash');
 
 const internals = {};
 
-internals.checkReportToUpdate = function ({reportId, status}) {
+internals.checkReportToUpdate = function ({reportId, status, _note}) {
   return new Promise((resolve) => {
     Report.statusCanBeUpdated(reportId, status)
       .then(() => {
         resolve({
           reportId: reportId,
           status: status,
+          _note: _note,
           update: true
         });
       })
@@ -24,9 +25,9 @@ internals.checkReportToUpdate = function ({reportId, status}) {
   });
 };
 
-internals.massUpdateStatus = function ({reportId, status}) {
+internals.massUpdateStatus = function ({reportId, status, _note}) {
   return new Promise((resolve) => {
-    Report.updateStatus(reportId, status)
+    Report.updateStatus(reportId, status, _note)
       .then((report) => {
         resolve(report);
       })
@@ -68,8 +69,10 @@ function validateParams (req, res, next) {
 
 function checkReportsToUpdate (req, res, next) {
   const reportUpdates = req.body.reportUpdates;
+  const status = req.body.status;
+  const note = req.$scope.note;
   const notValidReports = reportUpdates.reduce((acu, cv, index) => {
-    if ((!cv.reportId || !cv.status) && !acu) {
+    if ((!cv.reportId) && !acu) {
       return { error: true, index: index };
     }
   }, null);
@@ -83,7 +86,7 @@ function checkReportsToUpdate (req, res, next) {
     };
     return res.status(error.httpCode).send(error);
   }
-  return Promise.map(reportUpdates, internals.checkReportToUpdate)
+  return Promise.map(reportUpdates, reportUpdate => internals.checkReportToUpdate({ reportId: reportUpdate.reportId, status, _note: note._id}))
     .then(results => {
       req.$scope.checkedReports = results;
       next();
