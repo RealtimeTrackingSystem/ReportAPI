@@ -36,8 +36,9 @@ const ReportSchema = new Schema({
   duplicates: [{
     type: Types.ObjectId, ref: 'Report', index: true 
   }],
+  notes: [{ type: Types.ObjectId, ref: 'Note', index: true }],
   duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null, index: true  },
-  urgency: { type: String, enum: [ 'EMERGENCY', 'CRITICAL', 'PRIORITY', 'MEDIUM', 'LOW' ], default: 'LOW', index: true  },
+  urgency: { type: String, enum: [ 'EMERGENCY', 'MEDIUM', 'LOW' ], default: 'LOW', index: true  },
   _category: { type: Types.ObjectId, ref: 'Category', index: true }
 }, { timestamps: true });
 
@@ -110,6 +111,7 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
     ReportQuery.populate('medias');
   }
   ReportQuery.populate('_category');
+  ReportQuery.populate('notes');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
 
@@ -164,8 +166,11 @@ ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
     });
 };
 
-ReportSchema.statics.updateStatus = function (_id, status) {
-  return Report.findByIdAndUpdate(_id, {status: status.toUpperCase()})
+ReportSchema.statics.updateStatus = function (_id, status, _note) {
+  return Report.findByIdAndUpdate(_id, {
+    status: status.toUpperCase(),
+    $push: { notes: _note }
+  })
     .then(function () {
       return Report.findById(_id);
     });
@@ -218,6 +223,7 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, reso
   ReportQuery.populate('_category');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
+  ReportQuery.populate('notes');
   if (limit) {
     return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
   } else {

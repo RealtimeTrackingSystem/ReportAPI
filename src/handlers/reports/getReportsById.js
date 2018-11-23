@@ -42,6 +42,11 @@ function queryBuilder (req, res, next) {
     ReportQuery.populate('medias');
   }
 
+  ReportQuery.populate('_category');
+  ReportQuery.populate('notes');
+  ReportQuery.populate('duplicates');
+  ReportQuery.populate('duplicateParent');
+
   req.$scope.ReportQuery = ReportQuery;
   next();
 }

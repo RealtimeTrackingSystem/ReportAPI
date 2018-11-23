@@ -6,6 +6,10 @@ function validateBody (req, res, next) {
     status: {
       notEmpty: true,
       errorMessage: 'Missing Parameter: Status'
+    },
+    note: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Note'
     }
   };
   req.checkBody(schema);
@@ -78,10 +82,33 @@ function validateStatus (req, res, next) {
     });
 }
 
+function addNote (req, res, next) {
+  const reportId = req.params.reportId;
+  const note = req.body.note;
+  return req.DB.Note.add(reportId, note)
+    .then((newNote) => {
+      req.$scope.note = newNote;
+      next();
+    })
+    .catch(function (err) {
+      if (err.httpCode) {
+        return res.status(err.httpCode).send(err);
+      }
+      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      res.status(500).send({
+        status: 'ERROR',
+        statusCode: 1,
+        httpCode: 500,
+        message: 'Internal Server Error'
+      });
+    });
+}
+
 function logic (req, res, next) {
   const status = req.body.status;
   const reportId = req.params.reportId;
-  return req.DB.Report.updateStatus(reportId, status)
+  const note = req.$scope.note;
+  return req.DB.Report.updateStatus(reportId, status, note._id)
     .then(function (result) {
       req.$scope.report = result;
       return next();
@@ -133,6 +160,7 @@ module.exports = {
   validateBody,
   checkReport,
   validateStatus,
+  addNote,
   logic,
   sendEmail,
   respond
