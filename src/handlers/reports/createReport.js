@@ -107,13 +107,13 @@ function checkDuplicate (req, res, next) {
   return req.DB.Report.findOne({ title: title })
     .then(function (report) {
       if (report) {
-        const error = {
-          status: 'ERROR',
-          statusCode: 2,
-          httpCode: 400,
-          message: 'Invalid Parameter: Title - Duplicate'
+        const response = {
+          status: 'SUCCESS',
+          statusCode: 0,
+          httpCode: 201,
+          report: report._id
         };
-        res.status(error.httpCode).send(error);
+        res.status(response.httpCode).send(response);
       } else {
         next();
       }
