@@ -7,6 +7,31 @@ const handlers = require('../handlers');
 
 const reportRoute = Router();
 
+reportRoute.get('/api/reports/duplicates',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.getDuplicateReports.generateWhereClause,
+  handlers.reports.getDuplicateReports.logic,
+  handlers.reports.getDuplicateReports.respond);
+
+reportRoute.post('/api/reports/duplicates',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.postDuplicateReport.validateBody,
+  handlers.reports.postDuplicateReport.validateReportIds,
+  handlers.reports.postDuplicateReport.validateDuplicate,
+  handlers.reports.postDuplicateReport.validateParentDuplicate,
+  handlers.reports.postDuplicateReport.logic,
+  handlers.reports.postDuplicateReport.respond);
+
+reportRoute.post('/api/reports/duplicates/bulk',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.postDuplicate.validateParams,
+  handlers.reports.postDuplicate.duplicate,
+  handlers.reports.postDuplicate.sendEmail,
+  handlers.reports.postDuplicate.respond);
+
 reportRoute.post('/api/v1/reports/mass-update-status',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
@@ -29,20 +54,13 @@ reportRoute.put('/api/reports/status/:reportId',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
   handlers.reports.putReportStatus.validateBody,
-  handlers.reports.putReportStatus.validateStatus,
+  // handlers.reports.putReportStatus.validateStatus,
   handlers.reports.putReportStatus.checkReport,
   handlers.reports.putReportStatus.addNote,
   handlers.reports.putReportStatus.logic,
+  handlers.reports.putReportStatus.updateDuplicates,
   handlers.reports.putReportStatus.sendEmail,
   handlers.reports.putReportStatus.respond);
-
-reportRoute.post('/api/reports/duplicates',
-  handlers.authentication.clientAuth.authenticate,
-  handlers.authentication.clientAuth.logActivity,
-  handlers.reports.postDuplicate.validateParams,
-  handlers.reports.postDuplicate.duplicate,
-  handlers.reports.postDuplicate.sendEmail,
-  handlers.reports.postDuplicate.respond);
 
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,

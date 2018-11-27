@@ -36,6 +36,7 @@ const ReportSchema = new Schema({
   duplicates: [{
     type: Types.ObjectId, ref: 'Report', index: true 
   }],
+  isDuplicate: { type: Boolean, default: false },
   notes: [{ type: Types.ObjectId, ref: 'Note', index: true }],
   duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null, index: true  },
   urgency: { type: String, enum: [ 'EMERGENCY', 'MEDIUM', 'LOW' ], default: 'LOW', index: true  },
@@ -276,7 +277,8 @@ ReportSchema.statics.duplicateReport = function (original, duplicate) {
         duplicates: newDuplicates
       });
       const updateDuplicate = Report.findByIdAndUpdate(duplicateReport._id, {
-        duplicateParent: originalReport._id
+        duplicateParent: originalReport._id,
+        isDuplicate: true
       });
       return Promise.all([updateOriginal, updateDuplicate]);
     });
