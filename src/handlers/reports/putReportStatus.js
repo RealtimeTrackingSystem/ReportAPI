@@ -1,5 +1,27 @@
+const Promise = require('bluebird');
 const lib = require('../../lib');
 const mailtemplates = require('../../assets/mailtemplates');
+const DB = require('../../models');
+
+const internals = {};
+
+internals.updateIterator = function ({ reportId, status, noteId}) {
+  return DB.Report.findOneAndUpdate({
+    _id: reportId
+  }, {
+    status: status,
+    $addToSet: { notes: noteId } 
+  })
+    .then(report => {
+      return DB.Report.findOne({ _id: report._id })
+        .populate('_reporter')
+        .populate('_host')
+        .populate('notes');
+    })
+    .catch(err => {
+      return null;
+    });
+};
 
 function validateBody (req, res, next) {
   const schema = {
@@ -127,15 +149,66 @@ function logic (req, res, next) {
     });
 }
 
+function updateDuplicates (req, res, next) {
+  const status = req.body.status;
+  const note = req.$scope.note;
+  const duplicates = req.$scope.report.duplicates;
+  const dups = duplicates.map((d) => ({
+    reportId: d,
+    noteId: note._id,
+    status: status
+  }));
+  return Promise.map(dups, internals.updateIterator)
+    .then(results => {
+      req.logger.info(results);
+      req.$scope.duplicates = results.reduce((acu, cur) => {
+        if (cur._id) {
+          return acu.concat([cur]);
+        }
+        return acu;
+      }, []);
+      next();
+    })
+    .catch(function (err) {
+      if (err.httpCode) {
+        return res.status(err.httpCode).send(err);
+      }
+      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      res.status(500).send({
+        status: 'ERROR',
+        statusCode: 1,
+        httpCode: 500,
+        message: 'Internal Server Error'
+      });
+    });
+}
+
 function sendEmail (req, res, next) {
   const { reporter, host, report } = req.$scope;
   const reporterNotif = mailtemplates.reporterReportUpdate(report, reporter);
   const hostNotif = mailtemplates.hostReportUpdate(report, host);
+  const duplicates = req.$scope.duplicates;
   const mails = [
     { receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: reporterNotif },
     { receiver: host.email, sender: 'report-api-team@noreply', subject: 'Report: ' + report.title, htmlMessage: hostNotif }
   ];
-  return req.mailer.bulkSimpleMail(mails)
+  const duplicateReporterMail = duplicates.map(dup => {
+    return {
+      receiver: dup._reporter.email,
+      sender: 'report-api-team@noreply',
+      subject: 'Report: ' + dup.title,
+      htmlMessage: mailtemplates.reporterReportUpdate(dup, dup._reporter)
+    };
+  });
+  const duplicateHostMail = duplicates.map(dup => {
+    return {
+      receiver: dup._host.email,
+      sender: 'report-api-team@noreply',
+      subject: 'Report: ' + dup.title,
+      htmlMessage: mailtemplates.hostReportUpdate(dup, dup._host)
+    };
+  });
+  return req.mailer.bulkSimpleMail(mails.concat(duplicateReporterMail).concat(duplicateHostMail))
     .then(function (results) {
       req.$scope.sentMails = results;
       req.logger.info(results, 'PUT /api/reports/status/:reportId');
@@ -162,6 +235,7 @@ module.exports = {
   validateStatus,
   addNote,
   logic,
+  updateDuplicates,
   sendEmail,
   respond
 };
