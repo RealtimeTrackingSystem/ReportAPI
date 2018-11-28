@@ -1,4 +1,5 @@
 const lib = require('../../lib');
+const moment = require('moment');
 
 function validateBody (req, res, next) {
   const schema = {
@@ -41,14 +42,9 @@ function validateBody (req, res, next) {
         errorMessage: 'Invalid Parameter Length: Alias'
       }
     },
-    age: {
+    birthday: {
       notEmpty: true,
-      errorMessage: 'Missing Parameter: Age',
-      isInt: {
-        options: { min: 16 },
-        errorMessage: 'Invalid Parameter: Age - Must be 16 +'
-      },
-      toInt: true
+      errorMessage: 'Missing Parameter: Birthday'
     },
     street: {
       notEmpty: true,
@@ -118,7 +114,7 @@ function logic (req, res, next) {
     fname: reporter.fname,
     lname: reporter.lname,
     email: reporter.email,
-    age: reporter.age,
+    birthday: moment(reporter.birthday, 'YYYY-MM-DD').format('YYYY-MM-DD'),
     gender: reporter.gender,
     alias: reporter.alias,
     street: reporter.street,

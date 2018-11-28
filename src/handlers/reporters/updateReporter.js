@@ -35,7 +35,7 @@ function logic (req, res, next) {
     fname: reporter.fname,
     lname: reporter.lname,
     email: reporter.email,
-    age: reporter.age,
+    birthday: reporter.birthday,
     gender: reporter.gender,
     alias: reporter.alias,
     street: reporter.street,

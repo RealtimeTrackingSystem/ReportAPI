@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const moment = require('moment');
 
 const ReporterSchema = new Schema({
   fname: { type: String, index: true  },
@@ -7,15 +8,21 @@ const ReporterSchema = new Schema({
   email: { type: String, index: true  },
   alias: { type: String, index: true  },
   gender: { type: String, enum: ['M', 'F'], default: 'M', index: true },
-  age: { type: Number, index: true  },
   street: { type: String, index: true  },
   barangay: { type: String, index: true  },
   city: { type: String, index: true  },
   region: { type: String, index: true  },
   country: { type: String, index: true  },
   zip: { type: String, index: true  },
-  profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture', index: true  }
-}, { timestamps: true });
+  profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture', index: true  },
+  birthday: { type: String, required: true }
+}, { timestamps: true, getters: true, virtuals: true });
+
+ReporterSchema.set('toObject', { getters: true });
+
+ReporterSchema.virtual('age').get(function () {
+  return moment().diff(this.birthday, 'years');
+});
 
 ReporterSchema.statics.add = function (reporter) {
   const newReporter = new Reporter({
@@ -24,14 +31,14 @@ ReporterSchema.statics.add = function (reporter) {
     email: reporter.email,
     alias: reporter.alias,
     gender: reporter.gender,
-    age: reporter.age,
     street: reporter.street,
     barangay: reporter.barangay,
     city: reporter.city,
     region: reporter.region,
     country: reporter.country,
     zip: reporter.zip,
-    profilePicture: reporter.profilePicture
+    profilePicture: reporter.profilePicture,
+    birthday: reporter.birthday
   });
   return newReporter.save();
 };
@@ -43,14 +50,14 @@ ReporterSchema.statics.hydrate = function (reporter) {
     email: reporter.email,
     gender: reporter.gender,
     alias: reporter.alias,
-    age: reporter.age,
     street: reporter.street,
     barangay: reporter.barangay,
     city: reporter.city,
     region: reporter.region,
     country: reporter.country,
     zip: reporter.zip,
-    profilePicture: reporter.profilePicture
+    profilePicture: reporter.profilePicture,
+    birthday: reporter.birthday
   });
 };
 
