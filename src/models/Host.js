@@ -22,7 +22,6 @@ const HostSchema = new Schema({
   country: { type: String, index: true  },
   zip: { type: String, index: true  },
   profilePicture: { type: Types.ObjectId, ref: 'Picture', index: true  },
-  category: { type: Types.ObjectId, ref: 'Category', index: true  },
   isApproved: { type: Boolean, index: true, default: false },
   _client: { type: Types.ObjectId, ref: 'Client', index: true, required: true }
 }, { timestamps: true });
@@ -94,8 +93,15 @@ HostSchema.statics.search = function (searchString) {
   return Host.find({
     $or: [
       { name: { $regex: searchString, $options: 'i' } },
+      { email: { $regex: searchString, $options: 'i' } },
       { location: { $regex: searchString, $options: 'i' } },
-      { hostNature: { $regex: searchString, $options: 'i' } }
+      { hostNature: { $regex: searchString, $options: 'i' } },
+      { description: { $regex: searchString, $options: 'i' } },
+      { street: { $regex: searchString, $options: 'i' } },
+      { street: { $regex: searchString, $options: 'i' } },
+      { street: { $regex: searchString, $options: 'i' } },
+      { street: { $regex: searchString, $options: 'i' } },
+      { street: { $regex: searchString, $options: 'i' } }
     ]
   });
 };
@@ -105,8 +111,15 @@ HostSchema.statics.searchPaginated = async (searchString, page = 0, limit = 30) 
     const query = {
       $or: [
         { name: { $regex: searchString, $options: 'i' } },
+        { email: { $regex: searchString, $options: 'i' } },
         { location: { $regex: searchString, $options: 'i' } },
-        { hostNature: { $regex: searchString, $options: 'i' } }
+        { hostNature: { $regex: searchString, $options: 'i' } },
+        { description: { $regex: searchString, $options: 'i' } },
+        { street: { $regex: searchString, $options: 'i' } },
+        { street: { $regex: searchString, $options: 'i' } },
+        { street: { $regex: searchString, $options: 'i' } },
+        { street: { $regex: searchString, $options: 'i' } },
+        { street: { $regex: searchString, $options: 'i' } }
       ]
     };
     const offset = Number(page) * Number(limit);
