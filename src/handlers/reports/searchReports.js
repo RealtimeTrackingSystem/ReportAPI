@@ -87,18 +87,28 @@ function getReports (req, res, next) {
 
 function getReportCount (req, res, next) {
   const searchString = req.params.searchString;
-  return req.DB.Report.countDocuments({
+  const query = {
     $or: [
       { title: { $regex: searchString, $options: 'i' } },
       { description: { $regex: searchString, $options: 'i' } },
       { location: { $regex: searchString, $options: 'i' } },
+      { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
+      { 'category.name': { $regex: searchString, $options: 'i' } },
+      { 'category.description': { $regex: searchString, $options: 'i' } },
+      { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
       { tags: {
         $elemMatch: {
           $in: [searchString]
         }
       }}
     ]
-  })
+  };
+  if (req.query.isDuplicate != null ) {
+    query.$or.push({
+      isDuplicate: req.query.isDuplicate
+    });
+  }
+  return req.DB.Report.countDocuments(query)
     .then(function (count) {
       req.$scope.reportCount = count;
       next();

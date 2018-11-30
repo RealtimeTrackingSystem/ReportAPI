@@ -8,7 +8,7 @@ const REPORT_LIST =  [ 'NEW', 'VALIDATED', 'INPROGRESS', 'DONE', 'EXPIRED', 'VOI
 const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias'];
 
 const ReportSchema = new Schema({
-  title: { type: String, required: true, unique: true, index: true  },
+  title: { type: String, required: true, index: true  },
   description: { type: String, index: true  },
   location: { type: String, index: true  },
   long: { type: Number, index: true  },
@@ -40,7 +40,10 @@ const ReportSchema = new Schema({
   notes: [{ type: Types.ObjectId, ref: 'Note', index: true }],
   duplicateParent: { type: Types.ObjectId, ref: 'Report', default: null, index: true  },
   urgency: { type: String, enum: [ 'EMERGENCY', 'MEDIUM', 'LOW' ], default: 'LOW', index: true  },
-  _category: { type: Types.ObjectId, ref: 'Category', index: true }
+  category: {
+    name: { type: String, required: true, index: true },
+    description: { type: String, required: true, index: true }
+  }
 }, { timestamps: true });
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
@@ -62,7 +65,7 @@ ReportSchema.statics.hydrate = function (report) {
     },
     _reporter: report._reporter,
     _host: report._host,
-    _category: report._category
+    category: report.category
   });
 };
 
@@ -83,7 +86,7 @@ ReportSchema.statics.add = function (report) {
     },
     _reporter: report._reporter,
     _host: report._host,
-    _category: report._category
+    category: report.category
   });
   return newReport.save();
 };
@@ -111,7 +114,6 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   if (resources.indexOf('medias') > -1) {
     ReportQuery.populate('medias');
   }
-  ReportQuery.populate('_category');
   ReportQuery.populate('notes');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
@@ -187,41 +189,36 @@ ReportSchema.statics.search = function (searchString) {
   });
 };
 
-ReportSchema.statics.searchPaginated = function (searchString, page, limit, resources) {
+ReportSchema.statics.searchPaginated = function (searchString, page, limit, options = {}) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
-  const ReportQuery = Report.find({
+  const query = {
     $or: [
       { title: { $regex: searchString, $options: 'i' } },
       { description: { $regex: searchString, $options: 'i' } },
       { location: { $regex: searchString, $options: 'i' } },
+      { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
+      { 'category.name': { $regex: searchString, $options: 'i' } },
+      { 'category.description': { $regex: searchString, $options: 'i' } },
+      { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
       { tags: {
         $elemMatch: {
           $in: [searchString]
         }
       }}
     ]
-  });
-  if (resources.indexOf('reporter') > -1) {
-    ReportQuery.populate('_reporter');
+  };
+  if (options.isDuplicate != null ) {
+    query.$or.push({
+      isDuplicate: options.isDuplicate
+    });
   }
-
-  if (resources.indexOf('host') > -1) {
-    ReportQuery.populate('_host');
-  }
-
-  if (resources.indexOf('people') > -1) {
-    ReportQuery.populate('people');
-  }
-
-  if (resources.indexOf('properties') > -1) {
-    ReportQuery.populate('properties');
-  }
-
-  if (resources.indexOf('medias') > -1) {
-    ReportQuery.populate('medias');
-  }
-  ReportQuery.populate('_category');
+  const ReportQuery = Report.find(query);
+  ReportQuery.populate('_reporter');
+  ReportQuery.populate('_host');
+  ReportQuery.populate('people');
+  ReportQuery.populate('properties');
+  ReportQuery.populate('medias');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
   ReportQuery.populate('notes');

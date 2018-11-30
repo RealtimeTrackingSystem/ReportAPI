@@ -87,6 +87,10 @@ function validateBody (req, res, next) {
     category: {
       notEmpty: true,
       errorMessage: 'Missing Parameter: Category'
+    },
+    urgency: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Urgency'
     }
   };
   req.checkBody(schema);
@@ -99,11 +103,60 @@ function validateBody (req, res, next) {
   } else {
     return next();
   }
+}
 
+function checkCategory (req, res, next) {
+  const category = req.body.category;
+  let error;
+  if (!category) {
+    error = {
+      status: 'ERROR',
+      statusCode: 2,
+      httpCode: 400,
+      message: 'Missing Parameter: Category'
+    };
+  }
+  
+  if (!category.description) {
+    error = {
+      status: 'ERROR',
+      statusCode: 3,
+      httpCode: 400,
+      message: 'Invalid Parameter: Category -> no description'
+    };
+  }
+
+  if (!category.name) {
+    error = {
+      status: 'ERROR',
+      statusCode: 3,
+      httpCode: 400,
+      message: 'Invalid Parameter: Category -> no name'
+    };
+  }
+
+  if (error) {
+    req.logger.warn(error, 'POST /api/reports');
+    return res.status(error.httpCode).send(error);
+  }
+  next();
 }
 
 function checkDuplicate (req, res, next) {
-  return req.DB.Report.findOne(req.body)
+  const {
+    title, description, location, long, lat, urgency
+  } = req.body;
+  const query = {
+    $and: [
+      { title: title },
+      { description: description},
+      { location: location },
+      { urgency: urgency },
+      { long: long },
+      { lat: lat }
+    ]
+  };
+  return req.DB.Report.findOne(query)
     .then(function (report) {
       if (report) {
         const response = {
@@ -185,31 +238,9 @@ function validateReporter (req, res, next) {
     });
 }
 
-function addCategoryToScope (req, res, next) {
-  const categoryName = req.body.category;
-  return req.DB.Category.findOne({ name: categoryName })
-    .then(function (category) {
-      if (!category) {
-        return req.DB.Category.add({ name: categoryName });
-      } else {
-        return category;
-      }
-    })
-    .then(function (category) {
-      req.$scope.category = category;
-      next();
-    })
-    .catch(function (error) {
-      const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
-      res.status(500).send(err);
-    });
-}
-
 function addReportToScope (req, res, next) {
   const tags = req.body.tags || [];
   const host = req.$scope.host;
-  const category = req.$scope.category;
   if (host) {
     tags.concat(host.defaultTags);
   }
@@ -222,7 +253,7 @@ function addReportToScope (req, res, next) {
     tags: tags,
     _reporter: req.body.reporterId,
     _host: req.body.hostId,
-    _category: category._id
+    category: req.body.category
   };
   req.$scope.preparedReport = req.DB.Report.hydrate(report);
   next();
@@ -396,6 +427,7 @@ function respond (req, res) {
 
 module.exports = {
   validateBody,
+  checkCategory,
   checkDuplicate,
   validateReporter,
   validateHost,
@@ -406,7 +438,6 @@ module.exports = {
   addPeopleToScope,
   savePeopleToDB,
   addReportToScope,
-  addCategoryToScope,
   saveReportToDB,
   saveReportToClientReport,
   sendEmail,

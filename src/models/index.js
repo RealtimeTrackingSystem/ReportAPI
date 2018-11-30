@@ -7,7 +7,6 @@ const Property = require('./Property');
 const Report = require('./Report');
 const Reporter = require('./Reporter');
 const Host = require('./Host');
-const Category = require('./Category');
 const Picture = require('./Picture');
 const Attachment = require('./Attachment');
 const Note = require('./Note');
@@ -22,7 +21,6 @@ module.exports = {
   Report,
   Reporter,
   Host,
-  Category,
   Picture,
   Attachment,
   Note

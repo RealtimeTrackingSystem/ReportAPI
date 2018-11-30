@@ -53,6 +53,11 @@ function addOtherOptionsOnWhereClause (req, res, next) {
     where._host = req.query.host;
   }
 
+  if (req.query.isDuplicate != null ) {
+    where.isDuplicate = req.query.isDuplicate;
+  }
+
+
   req.$scope.whereClause = where;
   next();
 }
