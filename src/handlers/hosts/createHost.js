@@ -117,11 +117,10 @@ function validateBody (req, res, next) {
 }
 
 function checkDuplicates (req, res, next) {
-  const { name, email } = req.body;
+  const { email } = req.body;
   return req.DB.Host.findOne()
     .or([
-      { email: email },
-      { name: name }
+      { email: email }
     ])
     .then(function (host) {
       if (host) {
@@ -129,7 +128,7 @@ function checkDuplicates (req, res, next) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Host [ Email or Name ] Already Exists'
+          message: 'Invalid Resource: Host [ Email ] Already Exists'
         };
         req.logger.warn(error, 'POST /api/hosts');
         return res.status(error.httpCode).send(error);

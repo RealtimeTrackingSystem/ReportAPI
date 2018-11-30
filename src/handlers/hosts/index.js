@@ -3,5 +3,6 @@ module.exports = {
   getHostById: require('./getHostById'),
   createHost: require('./createHost'),
   searchHost: require('./searchHost'),
-  approveHost: require('./approveHost')
+  approveHost: require('./approveHost'),
+  searchHostPaginated: require('./searchHostPaginated')
 };
