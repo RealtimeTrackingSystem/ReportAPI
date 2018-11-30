@@ -18,7 +18,7 @@ const ReporterSchema = new Schema({
   birthday: { type: String, required: true }
 }, { timestamps: true, getters: true, virtuals: true });
 
-ReporterSchema.set('toObject', { getters: true });
+ReporterSchema.set('toObject', { getters: true, virtuals: true });
 
 ReporterSchema.virtual('age').get(function () {
   return moment().diff(this.birthday, 'years');

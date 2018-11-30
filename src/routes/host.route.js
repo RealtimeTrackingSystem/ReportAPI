@@ -7,6 +7,11 @@ const handlers = require('../handlers');
 
 const hostRoute = Router();
 
+hostRoute.get('/api/hosts/search-paginated/:searchString',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.hosts.searchHostPaginated.validateQuery,
+  handlers.hosts.searchHostPaginated.logic);
+
 hostRoute.put('/api/hosts/approval/:hostId',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.approveHost.checkHost,

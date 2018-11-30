@@ -100,6 +100,25 @@ HostSchema.statics.search = function (searchString) {
   });
 };
 
+HostSchema.statics.searchPaginated = async (searchString, page = 0, limit = 30) => {
+  try {
+    const query = {
+      $or: [
+        { name: { $regex: searchString, $options: 'i' } },
+        { location: { $regex: searchString, $options: 'i' } },
+        { hostNature: { $regex: searchString, $options: 'i' } }
+      ]
+    };
+    const offset = Number(page) * Number(limit);
+    const count = await Host.count(query);
+    const hosts = await Host.find(query).skip(offset).limit(Number(limit));
+    return { count: count, hosts: hosts };
+  }
+  catch (e) {
+    throw e;
+  }
+};
+
 HostSchema.statics.approve = function (hostId) {
   return Host.findByIdAndUpdate(hostId, {
     isApproved: true

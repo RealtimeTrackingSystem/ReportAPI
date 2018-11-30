@@ -103,8 +103,7 @@ function validateBody (req, res, next) {
 }
 
 function checkDuplicate (req, res, next) {
-  const title = req.body.title;
-  return req.DB.Report.findOne({ title: title })
+  return req.DB.Report.findOne(req.body)
     .then(function (report) {
       if (report) {
         const response = {
