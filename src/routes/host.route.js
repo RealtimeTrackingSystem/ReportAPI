@@ -29,6 +29,7 @@ hostRoute.get('/api/hosts',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.getHosts.validateQuery,
   handlers.hosts.getHosts.processFilter,
+  handlers.hosts.getHosts.setOtherOptions,
   handlers.hosts.getHosts.getHostCount,
   handlers.hosts.getHosts.logic,
   handlers.hosts.getHosts.respond);
