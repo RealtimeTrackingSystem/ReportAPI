@@ -58,18 +58,14 @@ function getReports (req, res, next) {
   const limit = parseInt(req.query.limit) || null;
   const page = parseInt(req.query.page) || 0;
   const searchString = req.params.searchString;
-  const resources
-    = req.query.resources
-      ? req.query.resources
-        .split(',')
-        .reduce(function (p, c) {
-          if (ALLOWED_RESOURCES.indexOf(c) > -1) {
-            return p.concat([c]);
-          }
-          return p;
-        }, [])
-      : [];
-  return req.DB.Report.searchPaginated(searchString, page, limit, resources)
+  const options = {};
+  if (req.query.isDuplicate != null ) {
+    options.isDuplicate = req.query.isDuplicate;
+  }
+  if (req.query.hostId) {
+    options.host = req.query.hostId;
+  }
+  return req.DB.Report.searchPaginated(searchString, page, limit, options)
     .then(function (reports) {
       req.$scope.reports = reports;
       next();
@@ -88,24 +84,33 @@ function getReports (req, res, next) {
 function getReportCount (req, res, next) {
   const searchString = req.params.searchString;
   const query = {
-    $or: [
-      { title: { $regex: searchString, $options: 'i' } },
-      { description: { $regex: searchString, $options: 'i' } },
-      { location: { $regex: searchString, $options: 'i' } },
-      { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
-      { 'category.name': { $regex: searchString, $options: 'i' } },
-      { 'category.description': { $regex: searchString, $options: 'i' } },
-      { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
-      { tags: {
-        $elemMatch: {
-          $in: [searchString]
-        }
-      }}
+    $and: [
+      {
+        $or: [
+          { title: { $regex: searchString, $options: 'i' } },
+          { description: { $regex: searchString, $options: 'i' } },
+          { location: { $regex: searchString, $options: 'i' } },
+          { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
+          { 'category.name': { $regex: searchString, $options: 'i' } },
+          { 'category.description': { $regex: searchString, $options: 'i' } },
+          { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
+          { tags: {
+            $elemMatch: {
+              $in: [searchString]
+            }
+          }}
+        ]
+      }
     ]
   };
   if (req.query.isDuplicate != null ) {
-    query.$or.push({
+    query.$and.push({
       isDuplicate: req.query.isDuplicate
+    });
+  }
+  if (req.query.hostId) {
+    query.$and.push({
+      _host: req.query.hostId
     });
   }
   return req.DB.Report.countDocuments(query)
