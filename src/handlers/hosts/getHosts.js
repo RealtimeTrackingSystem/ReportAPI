@@ -79,6 +79,17 @@ function processFilter (req, res, next) {
   }
 }
 
+function setOtherOptions (req, res, next) {
+  const where = req.$scope.whereClause || {};
+  if (req.query.isApproved != null) {
+    where.isApproved = req.query.isApproved;
+  }
+
+
+  req.$scope.whereClause = where;
+  next();
+}
+
 function getHostCount (req, res, next) {
   const where = req.$scope.whereClause || {};
   return req.DB.Host.countDocuments(where)
@@ -116,6 +127,7 @@ function respond (req, res) {
 module.exports = {
   validateQuery,
   processFilter,
+  setOtherOptions,
   getHostCount,
   logic,
   respond
