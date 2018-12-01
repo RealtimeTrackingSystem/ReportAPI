@@ -193,24 +193,33 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, opti
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
   const query = {
-    $or: [
-      { title: { $regex: searchString, $options: 'i' } },
-      { description: { $regex: searchString, $options: 'i' } },
-      { location: { $regex: searchString, $options: 'i' } },
-      { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
-      { 'category.name': { $regex: searchString, $options: 'i' } },
-      { 'category.description': { $regex: searchString, $options: 'i' } },
-      { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
-      { tags: {
-        $elemMatch: {
-          $in: [searchString]
-        }
-      }}
+    $and: [
+      {
+        $or: [
+          { title: { $regex: searchString, $options: 'i' } },
+          { description: { $regex: searchString, $options: 'i' } },
+          { location: { $regex: searchString, $options: 'i' } },
+          { urgency: { $regex: searchString.toUpperCase(), $options: 'i' } },
+          { 'category.name': { $regex: searchString, $options: 'i' } },
+          { 'category.description': { $regex: searchString, $options: 'i' } },
+          { status: { $regex: searchString.toUpperCase(), $options: 'i' } },
+          { tags: {
+            $elemMatch: {
+              $in: [searchString]
+            }
+          }}
+        ]
+      }
     ]
   };
   if (options.isDuplicate != null ) {
-    query.$or.push({
+    query.$and.push({
       isDuplicate: options.isDuplicate
+    });
+  }
+  if (options.host) {
+    query.$and.push({
+      _host: options.host
     });
   }
   const ReportQuery = Report.find(query);
