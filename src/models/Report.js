@@ -65,11 +65,13 @@ ReportSchema.statics.hydrate = function (report) {
     },
     _reporter: report._reporter,
     _host: report._host,
-    category: report.category
+    category: report.category,
+    urgency: report.urgency
   });
 };
 
 ReportSchema.statics.add = function (report) {
+  console.log('\n\n\n\n\n\n', report, '\n\n\n\n\n\n\n\n');
   const newReport = new Report({
     title: report.title,
     description: report.description,
@@ -86,7 +88,8 @@ ReportSchema.statics.add = function (report) {
     },
     _reporter: report._reporter,
     _host: report._host,
-    category: report.category
+    category: report.category,
+    urgency: report.urgency
   });
   return newReport.save();
 };
