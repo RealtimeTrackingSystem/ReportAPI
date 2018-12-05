@@ -3,5 +3,6 @@ module.exports = {
   getReporters: require('./getReporters'),
   getReporterById: require('./getReporterById'),
   updateReporter: require('./updateReporter'),
-  updateReporterProfilePic: require('./updateReporterProfilePic')
+  updateReporterProfilePic: require('./updateReporterProfilePic'),
+  addUpdateFirebaseToken: require('./addUpdateFirebaseToken')
 };

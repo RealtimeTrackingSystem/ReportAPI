@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const moment = require('moment');
+const _ = require('lodash');
 
 const ReporterSchema = new Schema({
   fname: { type: String, index: true  },
@@ -15,7 +16,11 @@ const ReporterSchema = new Schema({
   country: { type: String, index: true  },
   zip: { type: String, index: true  },
   profilePicture: { type: Schema.Types.ObjectId, ref: 'Picture', index: true  },
-  birthday: { type: String, required: true }
+  birthday: { type: String, required: true },
+  firebaseTokens: [{
+    deviceId: { type: String, required: true, index: true },
+    token: { type: String, required: true, index: true }
+  }]
 }, { timestamps: true, getters: true, virtuals: true });
 
 ReporterSchema.set('toObject', { getters: true, virtuals: true });
@@ -65,6 +70,40 @@ ReporterSchema.statics.findPaginated = function (query = {}, page, limit) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
   return Reporter.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
+};
+
+ReporterSchema.statics.addOrUpdateDevice = async ({ reporterId, deviceId, token }) => {
+  try {
+    const reporter = await Reporter.findOne({ _id: reporterId }).populate('firebaseTokents');
+    const firebaseTokens = reporter.firebaseTokens;
+    const firebaseToken = _.find(firebaseTokens, (fbt) => {
+      return fbt.deviceId === deviceId;
+    });
+    let newFirebaseTokens;
+    if (firebaseToken) {
+      newFirebaseTokens = firebaseTokens.reduce((pv, cv) => {
+        if (cv.deviceId === deviceId) {
+          return pv.concat([{ deviceId: cv.deviceId, token: token }]);
+        } else {
+          return pv.concat([{ deviceId: cv.deviceId, token: cv.token }]);
+        }
+      }, []);
+    }
+    let update;
+    if (newFirebaseTokens && Array.isArray(newFirebaseTokens)) {
+      update = await Reporter.findOneAndUpdate({ _id: reporterId }, {
+        firebaseTokens: newFirebaseTokens
+      });
+    } else {
+      update = await Reporter.findOneAndUpdate({ _id: reporterId }, {
+        $addToSet: { firebaseTokens: { deviceId: deviceId, token: token }}
+      });
+    }
+    return update;
+  }
+  catch (e) {
+    throw e;
+  }
 };
 
 const Reporter = mongoose.model('Reporter', ReporterSchema);
