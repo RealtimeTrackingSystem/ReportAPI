@@ -71,7 +71,6 @@ ReportSchema.statics.hydrate = function (report) {
 };
 
 ReportSchema.statics.add = function (report) {
-  console.log('\n\n\n\n\n\n', report, '\n\n\n\n\n\n\n\n');
   const newReport = new Report({
     title: report.title,
     description: report.description,

@@ -7,6 +7,12 @@ const handlers = require('../handlers');
 
 const reporterRoute = Router();
 
+reporterRoute.post('/api/reporters/firebase',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reporters.addUpdateFirebaseToken.validateBody,
+  handlers.reporters.addUpdateFirebaseToken.validateReporter,
+  handlers.reporters.addUpdateFirebaseToken.logic);
+
 reporterRoute.get('/api/reporters/:reporterId',
   handlers.authentication.clientAuth.authenticate,
   handlers.reporters.getReporterById.validateParams,
