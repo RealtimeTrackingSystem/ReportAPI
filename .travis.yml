@@ -18,6 +18,9 @@ before_install:
   - gcloud container clusters get-credentials rcrts-multi-cluster
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t johnhigginsavila/report-api-test -f Dockerfile.dev .
+  - docker build -t johnhigginsavila/report-api:latest -t johnhigginsavila/report-api:$SHA -f ./Dockerfile .
+  - docker push johnhigginsavila/report-api:latest
+  - docker push johnhigginsavila/report-api:$SHA
 script:
   - docker run johnhigginsavila/report-api-test npm run test
 deploy:
