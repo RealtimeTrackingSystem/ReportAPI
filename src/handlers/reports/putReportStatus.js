@@ -6,12 +6,22 @@ const DB = require('../../models');
 const internals = {};
 
 internals.updateIterator = function ({ reportId, status, noteId}) {
-  return DB.Report.findOneAndUpdate({
-    _id: reportId
-  }, {
-    status: status,
-    $addToSet: { notes: noteId } 
-  })
+  let query;
+  if (!noteId) {
+    query = DB.Report.findOneAndUpdate({
+      _id: reportId
+    }, {
+      status: status
+    });
+  } else {
+    query = DB.Report.findOneAndUpdate({
+      _id: reportId
+    }, {
+      status: status,
+      $addToSet: { notes: noteId } 
+    });
+  }
+  return query
     .then(report => {
       return DB.Report.findOne({ _id: report._id })
         .populate('_reporter')
@@ -130,7 +140,8 @@ function logic (req, res, next) {
   const status = req.body.status;
   const reportId = req.params.reportId;
   const note = req.$scope.note;
-  return req.DB.Report.updateStatus(reportId, status, note._id)
+  const noteId = note ? note._id : null;
+  return req.DB.Report.updateStatus(reportId, status, noteId)
     .then(function (result) {
       req.$scope.report = result;
       return next();
@@ -155,7 +166,7 @@ function updateDuplicates (req, res, next) {
   const duplicates = req.$scope.report.duplicates;
   const dups = duplicates.map((d) => ({
     reportId: d,
-    noteId: note._id,
+    noteId: note._id || null,
     status: status
   }));
   return Promise.map(dups, internals.updateIterator)
@@ -223,6 +234,7 @@ function sendEmail (req, res, next) {
 function sendNotification (req, res, next) {
   const { report, reporter } = req.$scope;
   const { status, note } = req.body;
+  const duplicates = req.$scope.duplicates;
   const message = {
     data: {
       reportId: report._id.toString(),
@@ -230,7 +242,7 @@ function sendNotification (req, res, next) {
     },
     notification:{
       title: `Report Update: ${report.title}`,
-      body: `Updated status to ${status}, with note ${note}`
+      body: `Updated status to ${status}${note ? ', with note ' + note : ''}`,
     },
     android: {
       ttl: 3600 * 1000,
@@ -238,7 +250,7 @@ function sendNotification (req, res, next) {
         icon: 'ic_menu_gallery',
         click_action: '.ReportDetailActivity', 
         title: `Report Update: ${report.title}`,
-        body: `Updated status to ${status}, with note ${note}`,
+        body: `Updated status to ${status}${note ? ', with note ' + note : ''}`,
         color: '#f45342',
         sound: 'default'
       },
@@ -246,8 +258,29 @@ function sendNotification (req, res, next) {
   };
 
   const firebaseTokens = reporter.firebaseTokens;
+
+  let tokens = [];
+
+  if (duplicates != null && Array.isArray(duplicates) && duplicates.length > 0) {
+    try {
+      const dupTokens = duplicates.reduce((pv, dup) => {
+        const ts = dup._reporter.firebaseTokens.map(fbt => fbt.token);
+        return pv.concat(ts);
+      }, []);
+  
+      tokens.concat(dupTokens);
+    }
+    catch (e) {
+      req.logger.warn(e, 'PUT /api/reports/status/:reportId');
+    }
+  }
+
   if (firebaseTokens != null && Array.isArray(firebaseTokens) && firebaseTokens.length > 0) {
-    const tokens = firebaseTokens.map(fbt => fbt.token);
+    const fbctokens = firebaseTokens.map(fbt => fbt.token);
+    tokens.concat(fbctokens);
+  }
+
+  if (tokens.length > 0) {
     return req.FCM.sendToMultipleTokenAsync(message, tokens)
       .then(result => {
         req.logger.info(result, 'PUT /api/reports/status/:reportId');

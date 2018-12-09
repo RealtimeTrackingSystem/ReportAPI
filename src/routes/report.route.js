@@ -63,6 +63,17 @@ reportRoute.put('/api/reports/status/:reportId',
   handlers.reports.putReportStatus.sendNotification,
   handlers.reports.putReportStatus.respond);
 
+reportRoute.delete('/api/reports/status/:reportId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reports.cancelReport.setBody,
+  handlers.reports.putReportStatus.validateStatus,
+  handlers.reports.putReportStatus.checkReport,
+  handlers.reports.putReportStatus.logic,
+  handlers.reports.putReportStatus.updateDuplicates,
+  handlers.reports.putReportStatus.sendEmail,
+  handlers.reports.putReportStatus.sendNotification,
+  handlers.reports.putReportStatus.respond);
+
 reportRoute.get('/api/reports',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
