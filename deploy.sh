@@ -1,5 +1,5 @@
-tar xvf secrets.tar
 docker build -t johnhigginsavila/report-api:latest -t johnhigginsavila/report-api:$SHA -f ./Dockerfile .
+ls
 docker push johnhigginsavila/report-api:latest
 docker push johnhigginsavila/report-api:$SHA
 kubectl apply -f k8s
