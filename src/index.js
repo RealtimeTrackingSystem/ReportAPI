@@ -67,7 +67,6 @@ app.use(function (req, res, next) {
   req.mailer = lib.mailer;
   req.$scope = {};
   req.DB = DB;
-  console.log(lib.FCM);
   req.FCM = lib.FCM;
   next();
 });
