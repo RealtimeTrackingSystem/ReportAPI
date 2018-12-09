@@ -220,6 +220,48 @@ function sendEmail (req, res, next) {
     });
 }
 
+function sendNotification (req, res, next) {
+  const { report, reporter } = req.$scope;
+  const { status, note } = req.body;
+  const message = {
+    data: {
+      reportId: report._id.toString(),
+      reportName: report.title
+    },
+    notification:{
+      title: `Report Update: ${report.title}`,
+      body: `Updated status to ${status}, with note ${note}`
+    },
+    android: {
+      ttl: 3600 * 1000,
+      notification: {
+        icon: 'ic_menu_gallery',
+        click_action: '.ReportDetailActivity', 
+        title: `Report Update: ${report.title}`,
+        body: `Updated status to ${status}, with note ${note}`,
+        color: '#f45342',
+        sound: 'default'
+      },
+    }
+  };
+
+  const firebaseTokens = reporter.firebaseTokens;
+  if (firebaseTokens != null && Array.isArray(firebaseTokens) && firebaseTokens.length > 0) {
+    const tokens = firebaseTokens.map(fbt => fbt.token);
+    return req.FCM.sendToMultipleTokenAsync(message, tokens)
+      .then(result => {
+        req.logger.info(result, 'PUT /api/reports/status/:reportId');
+        next();
+      })
+      .catch(error => {
+        req.logger.error(error, 'PUT /api/reports/status/:reportId');
+        next();
+      });
+  } else {
+    next();
+  }
+}
+
 function respond (req, res) {
   res.status(201).send({
     status: 'SUCCESS',
@@ -237,5 +279,6 @@ module.exports = {
   logic,
   updateDuplicates,
   sendEmail,
+  sendNotification,
   respond
 };

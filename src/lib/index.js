@@ -4,5 +4,6 @@ module.exports = {
   customValidators: require('./customValidators'),
   logger: require('./logger'),
   errorResponses: require('./errorResponses'),
-  mailer: require('./mailer')
+  mailer: require('./mailer'),
+  FCM: require('./fcm')
 };
