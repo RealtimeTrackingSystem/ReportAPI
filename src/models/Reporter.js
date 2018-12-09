@@ -19,6 +19,7 @@ const ReporterSchema = new Schema({
   birthday: { type: String, required: true },
   firebaseTokens: [{
     deviceId: { type: String, required: true, index: true },
+    platform: { type: String, enum: ['IOS', 'ANDROID', 'WEB'], default: 'ANDROID' },
     token: { type: String, required: true, index: true }
   }]
 }, { timestamps: true, getters: true, virtuals: true });
@@ -72,7 +73,7 @@ ReporterSchema.statics.findPaginated = function (query = {}, page, limit) {
   return Reporter.find(query).skip(offset).limit(allowedLimit).sort('-createdAt');
 };
 
-ReporterSchema.statics.addOrUpdateDevice = async ({ reporterId, deviceId, token }) => {
+ReporterSchema.statics.addOrUpdateDevice = async ({ reporterId, deviceId, token, platform }) => {
   try {
     const reporter = await Reporter.findOne({ _id: reporterId }).populate('firebaseTokents');
     const firebaseTokens = reporter.firebaseTokens;
@@ -83,9 +84,9 @@ ReporterSchema.statics.addOrUpdateDevice = async ({ reporterId, deviceId, token 
     if (firebaseToken) {
       newFirebaseTokens = firebaseTokens.reduce((pv, cv) => {
         if (cv.deviceId === deviceId) {
-          return pv.concat([{ deviceId: cv.deviceId, token: token }]);
+          return pv.concat([{ deviceId: cv.deviceId, token: token, platform: cv.platform || 'ANDROID' }]);
         } else {
-          return pv.concat([{ deviceId: cv.deviceId, token: cv.token }]);
+          return pv.concat([{ deviceId: cv.deviceId, token: cv.token, platform: cv.platform || 'ANDROID' }]);
         }
       }, []);
     }
@@ -96,7 +97,7 @@ ReporterSchema.statics.addOrUpdateDevice = async ({ reporterId, deviceId, token 
       });
     } else {
       update = await Reporter.findOneAndUpdate({ _id: reporterId }, {
-        $addToSet: { firebaseTokens: { deviceId: deviceId, token: token }}
+        $addToSet: { firebaseTokens: { deviceId: deviceId, token: token, platform: platform || 'ANDROID' }}
       });
     }
     return update;

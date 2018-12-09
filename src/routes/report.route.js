@@ -60,6 +60,7 @@ reportRoute.put('/api/reports/status/:reportId',
   handlers.reports.putReportStatus.logic,
   handlers.reports.putReportStatus.updateDuplicates,
   handlers.reports.putReportStatus.sendEmail,
+  handlers.reports.putReportStatus.sendNotification,
   handlers.reports.putReportStatus.respond);
 
 reportRoute.get('/api/reports',
