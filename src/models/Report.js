@@ -171,11 +171,19 @@ ReportSchema.statics.statusCanBeUpdated = function (_id, status) {
     });
 };
 
-ReportSchema.statics.updateStatus = function (_id, status, _note) {
-  return Report.findByIdAndUpdate(_id, {
-    status: status.toUpperCase(),
-    $push: { notes: _note }
-  })
+ReportSchema.statics.updateStatus = function (_id, status, _note = null) {
+  let query;
+  if (!_note) {
+    query = Report.findByIdAndUpdate(_id, {
+      status: status.toUpperCase()
+    });
+  } else {
+    query = Report.findByIdAndUpdate(_id, {
+      status: status.toUpperCase(),
+      $push: { notes: _note }
+    });
+  }
+  return query
     .then(function () {
       return Report.findById(_id);
     });
