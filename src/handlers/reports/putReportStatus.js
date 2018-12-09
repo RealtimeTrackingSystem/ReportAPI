@@ -264,10 +264,14 @@ function sendNotification (req, res, next) {
   if (duplicates != null && Array.isArray(duplicates) && duplicates.length > 0) {
     try {
       const dupTokens = duplicates.reduce((pv, dup) => {
+        let t = [];
         const ts = dup._reporter.firebaseTokens.map(fbt => fbt.token);
-        return pv.concat(ts);
+        for (let i = 0; i < ts.length; i++) {
+          t.push(ts[i]);
+        }
+        return pv.concat(t);
       }, []);
-  
+
       tokens.concat(dupTokens);
     }
     catch (e) {
@@ -277,8 +281,12 @@ function sendNotification (req, res, next) {
 
   if (firebaseTokens != null && Array.isArray(firebaseTokens) && firebaseTokens.length > 0) {
     const fbctokens = firebaseTokens.map(fbt => fbt.token);
-    tokens.concat(fbctokens);
+    for (let i = 0; i < fbctokens.length; i++) {
+      tokens.push(fbctokens[i]);
+    }
   }
+
+  console.log(tokens);
 
   if (tokens.length > 0) {
     return req.FCM.sendToMultipleTokenAsync(message, tokens)
