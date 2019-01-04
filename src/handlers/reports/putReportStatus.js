@@ -238,7 +238,8 @@ function sendNotification (req, res, next) {
   const message = {
     data: {
       reportId: report._id.toString(),
-      reportName: report.title
+      reportName: report.title,
+      type: 'REPORT_UPDATE'
     },
     notification:{
       title: `Report Update: ${report.title}`,

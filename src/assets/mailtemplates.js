@@ -101,10 +101,26 @@ function hostReportUpdate (report, host) {
   return mailString;
 }
 
+function hostRequestApproved (reporter) {
+  const mailString
+    = `
+    <p>Good Day ${reporter.gender == 'M' ? 'Mr.' : 'Ms.'} ${reporter.fname},</p>
+    </br>
+    <p>Your request to join host has been approved</p>
+    </br>
+    </br>
+    <p>Thank you very much</p>
+    <p>Sincerely,</p>
+    <p>REPORT API</p>
+    `;
+  return mailString;
+}
+
 module.exports = {
   sendAPIKey,
   reporterNewReport,
   hostNewReport,
   reporterReportUpdate,
-  hostReportUpdate
+  hostReportUpdate,
+  hostRequestApproved
 };
