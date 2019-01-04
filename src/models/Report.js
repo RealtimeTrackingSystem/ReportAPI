@@ -96,6 +96,7 @@ ReportSchema.statics.add = function (report) {
 ReportSchema.statics.findPaginated = function (query = {}, page, limit, resources) {
   const allowedLimit = limit < 31 ? limit : 30;
   const offset = page * allowedLimit;
+  query.isDuplicate = false;
   const ReportQuery = Report.find(query);
   if (resources.indexOf('reporter') > -1) {
     ReportQuery.populate('_reporter');
@@ -225,6 +226,10 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, opti
   if (options.isDuplicate != null ) {
     query.$and.push({
       isDuplicate: options.isDuplicate
+    });
+  } else {
+    query.$and.push({
+      isDuplicate: false
     });
   }
   if (options.host) {
