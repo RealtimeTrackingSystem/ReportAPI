@@ -95,6 +95,7 @@ function getReports (req, res, next) {
 
 function getReportCount (req, res, next) {
   const where = req.$scope.whereClause || {};
+  where.isDuplicate = false;
   return req.DB.Report.countDocuments(where)
     .then(function (count) {
       req.$scope.reportCount = count;
