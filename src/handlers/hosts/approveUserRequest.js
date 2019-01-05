@@ -33,7 +33,6 @@ function getReporter (req, res, next) {
 }
 
 function getHost (req, res, next) {
-  console.log(req.body);
   return req.DB.Host.findById(req.body.hostId)
     .then((host) => {
       if (!host) {
@@ -78,7 +77,6 @@ function checkType (req, res, next) {
 
 function sendNotification (req, res, next) {
   const { reporter } = req.$scope;
-  console.log(reporter);
   const { title, type, body } = req.$scope.message;
   const message = {
     data: {
@@ -100,8 +98,6 @@ function sendNotification (req, res, next) {
       },
     }
   };
-
-  console.log(message);
 
   const firebaseTokens = reporter.firebaseTokens;
 
