@@ -50,23 +50,44 @@ function getHost (req, res, next) {
     .catch((err) => internals.error(err, req, res));
 }
 
+function checkType (req, res, next) {
+  const { host } = req.$scope;
+  const type = req.query.type;
+  const message = {};
+  message.type = type;
+  switch (type) {
+    case 'REJECT_REQUEST':
+      message.title = 'Host request rejected';
+      message.body = `Your Request to Host: ${host.name} has been approved.`;
+      break;
+    case 'ACCEPT_REQUEST':
+      message.title = 'Host Request Approved';
+      message.body = `Your Request to Host: ${host.name} has been approved.`;
+      break;
+    default:
+  }
+  req.$scope.message = message;
+  next();
+}
+
 function sendNotification (req, res, next) {
-  const { reporter, host } = req.$scope;
+  const { reporter } = req.$scope;
+  const { title, type, body } = req.$scope.message;
   const message = {
     data: {
-      type: 'HOST_REQUEST_APPROVED'
+      type: type
     },
     notification: {
-      title: 'Host Request Approved',
-      body: `Your Request to Host: ${host.name} has been approved.`
+      title: title,
+      body: body
     },
     android: {
       ttl: 3600 * 1000,
       notification: {
         icon: 'ic_menu_gallery',
         click_action: '.HostPageActivity', 
-        title: 'Host Request Approved',
-        body: `Your Request to Host: ${host.name} has been approved.`,
+        title: title,
+        body: body,
         color: '#f45342',
         sound: 'default'
       },
@@ -101,7 +122,20 @@ function sendNotification (req, res, next) {
 
 function sendEmail (req, res, next) {
   const { reporter } = req.$scope;
-  const notif = mailtemplates.hostRequestApproved(reporter);
+  const { type } = req.$scope.message;
+  let notif;
+
+  switch (type) {
+    case 'ACCEPT_REQUEST':
+      notif = mailtemplates.hostRequestApproved(reporter);
+      break;
+    case 'REJECT_REQUEST':
+      notif = mailtemplates.hostRequestRejected(reporter);
+      break;
+    default:
+      notif = mailtemplates.hostRequestApproved(reporter);
+  }
+  
   const mails = [{
     receiver: reporter.email, sender: 'report-api-team@noreply', subject: 'Request TO Join Host Approved', htmlMessage: notif
   }];
@@ -128,6 +162,7 @@ function respond (req, res) {
 module.exports = {
   getReporter,
   getHost,
+  checkType,
   sendNotification,
   sendEmail,
   respond
