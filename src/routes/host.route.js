@@ -11,6 +11,7 @@ hostRoute.post('/api/hosts/approveUserRequest',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.approveUserRequest.getReporter,
   handlers.hosts.approveUserRequest.getHost,
+  handlers.hosts.approveUserRequest.checkType,
   handlers.hosts.approveUserRequest.sendNotification,
   handlers.hosts.approveUserRequest.sendEmail,
   handlers.hosts.approveUserRequest.respond);
