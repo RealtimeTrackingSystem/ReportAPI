@@ -33,6 +33,7 @@ function getReporter (req, res, next) {
 }
 
 function getHost (req, res, next) {
+  console.log(req.body);
   return req.DB.Host.findById(req.body.hostId)
     .then((host) => {
       if (!host) {
@@ -54,17 +55,22 @@ function checkType (req, res, next) {
   const { host } = req.$scope;
   const type = req.query.type;
   const message = {};
-  message.type = type;
+  
   switch (type) {
     case 'REJECT_REQUEST':
+      message.type = 'REJECT_REQUEST';
       message.title = 'Host request rejected';
       message.body = `Your Request to Host: ${host.name} has been approved.`;
       break;
     case 'ACCEPT_REQUEST':
+      message.type = 'ACCEPT_REQUEST';
       message.title = 'Host Request Approved';
       message.body = `Your Request to Host: ${host.name} has been approved.`;
       break;
     default:
+      message.type = 'ACCEPT_REQUEST';
+      message.title = 'Host Request Approved';
+      message.body = `Your Request to Host: ${host.name} has been approved.`;
   }
   req.$scope.message = message;
   next();
@@ -72,6 +78,7 @@ function checkType (req, res, next) {
 
 function sendNotification (req, res, next) {
   const { reporter } = req.$scope;
+  console.log(reporter);
   const { title, type, body } = req.$scope.message;
   const message = {
     data: {
@@ -93,6 +100,8 @@ function sendNotification (req, res, next) {
       },
     }
   };
+
+  console.log(message);
 
   const firebaseTokens = reporter.firebaseTokens;
 
