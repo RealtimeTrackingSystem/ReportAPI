@@ -98,9 +98,6 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   const offset = page * allowedLimit;
   query.isDuplicate = false;
   const ReportQuery = Report.find(query);
-  if (resources.indexOf('reporter') > -1) {
-    ReportQuery.populate('_reporter');
-  }
 
   if (resources.indexOf('host') > -1) {
     ReportQuery.populate('_host');
@@ -120,6 +117,7 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   ReportQuery.populate('notes');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
+  ReportQuery.populate('_reporter');
 
   if (limit) {
     return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
