@@ -4,5 +4,6 @@ module.exports = {
   clients: require('./clients'),
   reports: require('./reports'),
   hosts: require('./hosts'),
-  reporters: require('./reporters')
+  reporters: require('./reporters'),
+  people: require('./people')
 };

@@ -14,6 +14,7 @@ function routes (app) {
   app.use(require('./client.route'));
   app.use(require('./host.route'));
   app.use(require('./reporter.route'));
+  app.use(require('./people.route'));
   app.use('*', function (req, res){
     const path = req.params['0'];
     const message = `${path} is not a valid path`;
