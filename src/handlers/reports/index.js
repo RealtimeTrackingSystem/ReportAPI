@@ -9,5 +9,6 @@ module.exports = {
   postDuplicate: require('./postDuplicate'),
   massStatusUpdate: require('./massStatusUpdate'),
   getDuplicateReports: require('./getDuplicateReports'),
-  postDuplicateReport: require('./postDuplicateReport')
+  postDuplicateReport: require('./postDuplicateReport'),
+  putRemoveDuplicateReport: require('./putRemoveDuplicateReport')
 };

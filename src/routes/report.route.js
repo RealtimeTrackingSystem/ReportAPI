@@ -24,6 +24,13 @@ reportRoute.post('/api/reports/duplicates',
   handlers.reports.postDuplicateReport.logic,
   handlers.reports.postDuplicateReport.respond);
 
+reportRoute.put('/api/reports/duplicates',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.putRemoveDuplicateReport.validateBody,
+  handlers.reports.putRemoveDuplicateReport.validateReportId,
+  handlers.reports.putRemoveDuplicateReport.logic);
+
 reportRoute.post('/api/reports/duplicates/bulk',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,
