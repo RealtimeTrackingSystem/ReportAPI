@@ -303,6 +303,45 @@ ReportSchema.statics.duplicateReport = function (original, duplicate) {
     });
 };
 
+ReportSchema.statics.removeDuplicateReport = async function (duplicate) {
+  try {
+    const duplicateReport = await Report.findById(duplicate)
+                                    .populate('_host')
+                                    .populate('_reporter');
+    if (!duplicateReport.isDuplicate) {
+      throw {
+        success: false,
+        message: 'Invalid Parameter: Duplcate Report Id'
+      };
+    }
+
+    const originalReport = await Report.findById(duplicateReport.duplicateParent)
+                                  .populate('_host')
+                                  .populate('_reporter');
+    
+    const duplicates = originalReport.duplicates.filter((dup) => {
+      return dup.toString() !== duplicate;
+    });
+
+    const updateDuplicate = await Report.findOneAndUpdate({
+      _id: duplicate
+    }, {
+      isDuplicate: false,
+      duplicateParent: null
+    });
+
+    const updateOriginal = await Report.findOneAndUpdate({
+      _id: duplicateReport.duplicateParent
+    }, {
+      duplicates: duplicates
+    });
+
+    return { duplicateReport: updateDuplicate, originalReport: updateOriginal };
+  } catch (e) {
+    throw e;
+  }
+}
+
 const Report = mongoose.model('Report', ReportSchema);
 
 module.exports = Report;
