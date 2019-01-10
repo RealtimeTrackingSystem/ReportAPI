@@ -138,6 +138,12 @@ HostSchema.statics.approve = function (hostId) {
   });
 };
 
+HostSchema.statics.disapprove = function (hostId) {
+  return Host.findByIdAndUpdate(hostId, {
+    isApproved: false
+  });
+};
+
 const Host = mongoose.model('Host', HostSchema);
 
 module.exports = Host;

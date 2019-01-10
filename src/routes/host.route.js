@@ -28,6 +28,13 @@ hostRoute.put('/api/hosts/approval/:hostId',
   handlers.hosts.approveHost.logic,
   handlers.hosts.approveHost.respond);
 
+hostRoute.put('/api/hosts/disapproval/:hostId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.hosts.disapproveHost.checkHost,
+  handlers.hosts.disapproveHost.checkClient,
+  handlers.hosts.disapproveHost.logic,
+  handlers.hosts.disapproveHost.respond);
+
 hostRoute.get('/api/hosts/search/:searchString',
   handlers.authentication.clientAuth.authenticate,
   handlers.hosts.searchHost.validateParams,

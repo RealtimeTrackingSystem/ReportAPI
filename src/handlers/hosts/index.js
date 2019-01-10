@@ -5,5 +5,6 @@ module.exports = {
   searchHost: require('./searchHost'),
   approveHost: require('./approveHost'),
   searchHostPaginated: require('./searchHostPaginated'),
-  approveUserRequest: require('./approveUserRequest')
+  approveUserRequest: require('./approveUserRequest'),
+  disapproveHost: require('./disapproveHost')
 };
