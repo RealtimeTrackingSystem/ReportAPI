@@ -10,5 +10,9 @@ module.exports = {
   massStatusUpdate: require('./massStatusUpdate'),
   getDuplicateReports: require('./getDuplicateReports'),
   postDuplicateReport: require('./postDuplicateReport'),
-  putRemoveDuplicateReport: require('./putRemoveDuplicateReport')
+  putRemoveDuplicateReport: require('./putRemoveDuplicateReport'),
+  addMediationNote: require('./addMediationNote'),
+  getMediationNoteById: require('./getMediationNoteById'),
+  addFileAction: require('./addFileAction'),
+  updateFileAction: require('./updateFileAction')
 };

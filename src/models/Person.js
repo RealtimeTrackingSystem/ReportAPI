@@ -8,7 +8,13 @@ const PersonSchema = new Schema({
   lname: { type: String, index: true  },
   alias: { type: String, required: true, index: true  },
   isCulprit: { type: Boolean, default: false, index: true  },
-  isCasualty: { type: Boolean, default: true, index: true  }
+  isCasualty: { type: Boolean, default: true, index: true  },
+  summons: [{
+    type: Types.ObjectId, ref: 'Summon', index: true
+  }],
+  _clearance: {
+    type: Types.ObjectId, ref: 'Clearance', index: true
+  }
 }, { timestamps: true });
 
 PersonSchema.statics.add = function (person) {

@@ -168,7 +168,7 @@ async function logic (req, res, next) {
   catch (e) {
     await transaction.rollback();
     transaction.clean();
-    internals.internals(e, req, res);
+    internals.catchError(e, req, res);
   }
 }
 

@@ -43,7 +43,9 @@ const ReportSchema = new Schema({
   category: {
     name: { type: String, required: true, index: true },
     description: { type: String, required: true, index: true }
-  }
+  },
+  mediationNotes: [{ type: Types.ObjectId, ref: 'MediationNote', index: true }],
+  _fileAction: { type: Types.ObjectId, ref: 'FileAction', index: true }
 }, { timestamps: true });
 
 ReportSchema.index({reportCoordinate: '2dsphere'});
@@ -104,7 +106,14 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   }
 
   if (resources.indexOf('people') > -1) {
-    ReportQuery.populate('people');
+    ReportQuery.populate({
+      path: 'people',
+      model: 'Person',
+      populate: {
+        path: 'summons',
+        model: 'Summon'
+      }
+    });
   }
 
   if (resources.indexOf('properties') > -1) {
@@ -118,6 +127,18 @@ ReportSchema.statics.findPaginated = function (query = {}, page, limit, resource
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
   ReportQuery.populate('_reporter');
+
+  ReportQuery.populate({
+    path: 'mediationNotes',
+    model: 'MediationNote',
+    populate: {
+      path: '_media',
+      model: 'Attachment'
+    }
+  });
+
+
+  ReportQuery.populate('_fileAction');
 
   if (limit) {
     return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
@@ -238,12 +259,30 @@ ReportSchema.statics.searchPaginated = function (searchString, page, limit, opti
   const ReportQuery = Report.find(query);
   ReportQuery.populate('_reporter');
   ReportQuery.populate('_host');
-  ReportQuery.populate('people');
+  ReportQuery.populate({
+    path: 'people',
+    model: 'Person',
+    populate: {
+      path: 'summons',
+      model: 'Summon'
+    }
+  });
   ReportQuery.populate('properties');
   ReportQuery.populate('medias');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
   ReportQuery.populate('notes');
+  ReportQuery.populate({
+    path: 'mediationNotes',
+    model: 'MediationNote',
+    populate: {
+      path: '_media',
+      model: 'Attachment'
+    }
+  });
+
+
+  ReportQuery.populate('_fileAction');
   if (limit) {
     return ReportQuery.skip(offset).limit(allowedLimit).sort('-updatedAt');
   } else {
