@@ -31,7 +31,14 @@ function queryBuilder (req, res, next) {
   }
 
   if (resources.indexOf('people') > -1) {
-    ReportQuery.populate('people');
+    ReportQuery.populate({
+      path: 'people',
+      model: 'Person',
+      populate: {
+        path: 'summons',
+        model: 'Summon'
+      }
+    });
   }
 
   if (resources.indexOf('properties') > -1) {
@@ -46,6 +53,17 @@ function queryBuilder (req, res, next) {
   ReportQuery.populate('notes');
   ReportQuery.populate('duplicates');
   ReportQuery.populate('duplicateParent');
+
+  ReportQuery.populate({
+    path: 'mediationNotes',
+    model: 'MediationNote',
+    populate: {
+      path: '_media',
+      model: 'Attachment'
+    }
+  });
+
+  ReportQuery.populate('_fileAction');
 
   req.$scope.ReportQuery = ReportQuery;
   next();

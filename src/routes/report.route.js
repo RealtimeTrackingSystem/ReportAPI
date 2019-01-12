@@ -7,6 +7,31 @@ const handlers = require('../handlers');
 
 const reportRoute = Router();
 
+reportRoute.put('/api/reports/fileActions/:fileActionId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.updateFileAction.validateBody,
+  handlers.reports.updateFileAction.logic);
+
+reportRoute.post('/api/reports/fileActions',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.addFileAction.validateBody,
+  handlers.reports.addFileAction.logic,
+  handlers.reports.addFileAction.respond);
+
+reportRoute.post('/api/reports/mediationNotes',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.addMediationNote.validateBody,
+  handlers.reports.addMediationNote.logic,
+  handlers.reports.addMediationNote.respond);
+
+reportRoute.get('/api/reports/mediationNotes/:mediationNoteId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.reports.getMediationNoteById.logic);
+
 reportRoute.get('/api/reports/duplicates',
   handlers.authentication.clientAuth.authenticate,
   handlers.authentication.clientAuth.logActivity,

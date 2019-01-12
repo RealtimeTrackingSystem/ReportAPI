@@ -1,3 +1,6 @@
 module.exports = {
-  searchPeople: require('./searchPeople')
+  searchPeople: require('./searchPeople'),
+  sendSummon: require('./sendSummon'),
+  updateSummon: require('./updateSummon'),
+  getSummonById: require('./getSummonById')
 };

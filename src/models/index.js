@@ -23,5 +23,9 @@ module.exports = {
   Host,
   Picture,
   Attachment,
-  Note
+  Note,
+  Clearance: require('./Clearance'),
+  MediationNote: require('./MediationNote'),
+  Summon: require('./Summon'),
+  FileAction: require('./FileAction')
 };
