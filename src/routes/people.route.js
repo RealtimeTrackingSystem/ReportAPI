@@ -32,4 +32,12 @@ peopleRoute.put('/api/people/summons/:summonId',
   handlers.people.updateSummon.checkSummon,
   handlers.people.updateSummon.logic);
 
+peopleRoute.post('/api/people/clearances',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.authentication.clientAuth.logActivity,
+  handlers.people.sendClearance.validateBody,
+  handlers.people.sendClearance.checkPersonId,
+  handlers.people.sendClearance.logic,
+  handlers.people.sendClearance.respond);
+
 module.exports = peopleRoute;
