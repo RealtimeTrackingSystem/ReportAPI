@@ -5,7 +5,7 @@ const Transaction = require('mongoose-transactions');
 const internals = {};
 
 internals.catchError = (err, req, res) => {
-  req.logger.error(err, 'POST /api/reports/duplicates');
+  // req.logger.error(err, 'POST /api/reports/duplicates');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -30,7 +30,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/reports/duplicates');
+    // req.logger.warn(errorObject, 'POST /api/reports/duplicates');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -60,7 +60,7 @@ function validateReportIds (req, res, next) {
   }
 
   if (error) {
-    req.logger.warn(error, 'POST /api/reports/duplicates');
+    // req.logger.warn(error, 'POST /api/reports/duplicates');
     return res.status(error.httpCode).send(error);
   }
 
@@ -80,7 +80,7 @@ function validateParentDuplicate (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Parent Duplicate Report'
         };
-        req.logger.warn(error, 'POST /api/reports/duplicates');
+        // req.logger.warn(error, 'POST /api/reports/duplicates');
         return res.status(error.httpCode).send(error);
       }
       next();
@@ -101,7 +101,7 @@ function validateDuplicate (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Duplicate Report'
         };
-        req.logger.warn(error, 'POST /api/reports/duplicates');
+        // req.logger.warn(error, 'POST /api/reports/duplicates');
         return res.status(error.httpCode).send(error);
       }
       next();
@@ -178,7 +178,7 @@ function respond (req, res) {
     statusCode: 0,
     httpCode: 201
   };
-  req.logger.info(response, 'POST /api/reports/duplicates');
+  // req.logger.info(response, 'POST /api/reports/duplicates');
   res.status(response.httpCode).send(response);
 }
 

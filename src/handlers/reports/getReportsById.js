@@ -79,7 +79,7 @@ function logic (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -90,7 +90,7 @@ function logic (req, res, next) {
 }
 
 function respond (req, res) {
-  req.logger.info(req.$scope.report, 'PUT /api/reports/:reportId');
+  // req.logger.info(req.$scope.report, 'PUT /api/reports/:reportId');
   res.status(200).send({
     status: 'SUCCESS',
     statusCode: 0,

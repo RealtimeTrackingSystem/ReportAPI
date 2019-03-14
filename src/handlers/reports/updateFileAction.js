@@ -3,7 +3,7 @@ const lib = require('../../lib');
 const internals = {};
 
 internals.catchError = (err, req, res) => {
-  req.logger.error(err, 'PUT /api/reports/fileaction');
+  // req.logger.error(err, 'PUT /api/reports/fileaction');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -23,7 +23,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('PUT /api/reports/fileaction', errorObject);
+    // req.logger.warn('PUT /api/reports/fileaction', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();

@@ -1,7 +1,7 @@
 
 const internals = {};
 internals.catchServerError = function (error, req, res) {
-  req.logger.error(error, 'PUT /api/reporters/:reporterId');
+  // req.logger.error(error, 'PUT /api/reporters/:reporterId');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -20,7 +20,7 @@ function validateReporter (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Reporter ID'
         };
-        req.logger.warn(error, 'PUT /api/reporters/:reporterId');
+        // req.logger.warn(error, 'PUT /api/reporters/:reporterId');
         return res.status(error.httpCode).send(error);
       }
       next();
@@ -60,7 +60,7 @@ function respond (req, res) {
     httpCode: 201,
     reporter: req.$scope.reporter._id
   };
-  req.logger.info(response, 'PUT /api/reporters/:reporterId');
+  // req.logger.info(response, 'PUT /api/reporters/:reporterId');
   res.status(response.httpCode).send(response);
 }
 

@@ -7,7 +7,7 @@ internals.catch = function (err, req, res) {
     httpCode: 500,
     message: 'Internal Server Error'
   };
-  req.logger.error(err, 'PUT /api/hosts/approval');
+  // req.logger.error(err, 'PUT /api/hosts/approval');
   res.status(error.httpCode).send(error);
 };
 function checkHost (req, res, next) {
@@ -22,7 +22,7 @@ function checkHost (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Host ID -> Host Not listed'
         };
-        req.logger.warn(error, 'PUT /api/hosts/approval');
+        // req.logger.warn(error, 'PUT /api/hosts/approval');
         return res.status(error.httpCode).send(error);
       }
       req.$scope.host = host;
@@ -42,7 +42,7 @@ function checkClient (req, res, next) {
       httpCode: 400,
       message: 'Invalid Parameter: Host ID -> Invalid Client'
     };
-    req.logger.warn(error, 'PUT /api/hosts/approval');
+    // req.logger.warn(error, 'PUT /api/hosts/approval');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -52,7 +52,7 @@ function logic (req, res, next) {
   const host = req.$scope.host;
   req.DB.Host.approve(host._id)
     .then((updatedHost) => {
-      req.logger.info(updatedHost, 'PUT /api/hosts/approval');
+      // req.logger.info(updatedHost, 'PUT /api/hosts/approval');
       next();
     })
     .catch(err => internals.catch(err, req, res));
@@ -65,7 +65,7 @@ function respond (req, res) {
     httpCode: 201,
     host: req.$scope.host
   };
-  req.logger.info(response, 'PUT /api/hosts/approval');
+  // req.logger.info(response, 'PUT /api/hosts/approval');
   res.status(response.httpCode).send(response);
 }
 

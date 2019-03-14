@@ -13,7 +13,7 @@ function validateParams (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'PUT /api/reporters/profilepic/:reporterId');
+    // req.logger.warn(errorObject, 'PUT /api/reporters/profilepic/:reporterId');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -29,7 +29,7 @@ function validateReporter (req, res, next) {
       httpCode: 400,
       message: 'Invalid Parameter: Reporter ID'
     };
-    req.logger.warn(error, 'PUT /api/reporters/profilepic/:reporterId');
+    // req.logger.warn(error, 'PUT /api/reporters/profilepic/:reporterId');
     return res.status(error.httpCode).send(error);
   }
   return req.DB.Reporter.findById(reporterId)
@@ -41,7 +41,7 @@ function validateReporter (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Reporter ID'
         };
-        req.logger.warn(error, 'PUT /api/reporters/profilepic/:reporterId');
+        // req.logger.warn(error, 'PUT /api/reporters/profilepic/:reporterId');
         return res.status(error.httpCode).send(error);
       }
       return next();
@@ -53,7 +53,7 @@ function validateReporter (req, res, next) {
         httpCode: 500,
         message: 'Internal Server Error'
       };
-      req.logger.warn(err, 'PUT /api/reporters/profilepic/:reporterId');
+      // req.logger.warn(err, 'PUT /api/reporters/profilepic/:reporterId');
       res.status(error.httpCode).send(error);
     });
 }
@@ -82,7 +82,7 @@ function logic (req, res, next) {
         httpCode: 500,
         message: 'Internal Server Error'
       };
-      req.logger.warn(err, 'PUT /api/reporters/profilepic/:reporterId');
+      // req.logger.warn(err, 'PUT /api/reporters/profilepic/:reporterId');
       res.status(error.httpCode).send(error);
     });
 }
@@ -93,7 +93,7 @@ function respond (req, res) {
     statusCode: 0,
     httpCode: 201
   };
-  req.logger.info(response, 'PUT /api/reporters/profilepic/:reporterId');
+  // req.logger.info(response, 'PUT /api/reporters/profilepic/:reporterId');
   res.status(response.httpCode).send(response);
 }
 

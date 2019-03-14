@@ -25,7 +25,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/people', errorObject);
+    // req.logger.warn('GET /api/people', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -44,11 +44,11 @@ function getPeople (req, res) {
         people: result.people,
         count: result.count
       };
-      req.logger.info(response, 'GET /api/people');
+      // req.logger.info(response, 'GET /api/people');
       res.status(response.httpCode).send(response);
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/people');
+      // req.logger.error(err, 'GET /api/people');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,

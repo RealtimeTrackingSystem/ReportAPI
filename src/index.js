@@ -62,8 +62,8 @@ app.use(validator({
 
 // adding req variables
 app.use(function (req, res, next) {
-  req.logger = {};
-  req.logger = lib.logger;
+  // req.logger = {};
+  // req.logger = lib.logger;
   req.mailer = lib.mailer;
   req.$scope = {};
   req.DB = DB;

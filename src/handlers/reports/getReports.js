@@ -21,7 +21,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/reports', errorObject);
+    // req.logger.warn('GET /api/reports', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -83,7 +83,7 @@ function getReports (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports');
+      // req.logger.error(err, 'GET /api/reports');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -102,7 +102,7 @@ function getReportCount (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports');
+      // req.logger.error(err, 'GET /api/reports');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -122,7 +122,7 @@ function respond (req, res) {
     reports: reports,
     count: req.$scope.reportCount
   };
-  req.logger.info(result, 'GET /api/reports');
+  // req.logger.info(result, 'GET /api/reports');
   res.status(result.httpCode).send(result);
 }
 

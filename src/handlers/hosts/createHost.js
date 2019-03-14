@@ -109,7 +109,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/hosts');
+    // req.logger.warn(errorObject, 'POST /api/hosts');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -130,13 +130,13 @@ function checkDuplicates (req, res, next) {
           httpCode: 400,
           message: 'Invalid Resource: Host [ Email ] Already Exists'
         };
-        req.logger.warn(error, 'POST /api/hosts');
+        // req.logger.warn(error, 'POST /api/hosts');
         return res.status(error.httpCode).send(error);
       }
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'POST /api/hosts');
+      // req.logger.error(err, 'POST /api/hosts');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -171,7 +171,7 @@ function logic (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'POST /api/hosts');
+      // req.logger.error(err, 'POST /api/hosts');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -189,7 +189,7 @@ function respond (req, res) {
     httpCode: 201,
     host: host
   };
-  req.logger.info(response, 'POST /api/hosts');
+  // req.logger.info(response, 'POST /api/hosts');
   res.status(201).send(response);
 }
 
