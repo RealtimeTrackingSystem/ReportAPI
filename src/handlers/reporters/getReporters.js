@@ -20,7 +20,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/reports', errorObject);
+    // req.logger.warn('GET /api/reports', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -40,7 +40,7 @@ function logic (req, res) {
       });
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reporters');
+      // req.logger.error(err, 'GET /api/reporters');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,

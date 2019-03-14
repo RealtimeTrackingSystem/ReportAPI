@@ -10,7 +10,7 @@ internals.error = function (err, req, res) {
     httpCode: 500,
     message: 'Internal Server Error'
   };
-  req.logger.error(err, 'POST /host/approveUserRequest');
+  // req.logger.error(err, 'POST /host/approveUserRequest');
   res.status(error.httpCode).send(error);
 };
 
@@ -113,11 +113,11 @@ function sendNotification (req, res, next) {
   if (tokens.length > 0) {
     return req.FCM.sendToMultipleTokenAsync(message, tokens)
       .then(result => {
-        req.logger.info(result, 'POST /host/approveUserRequest');
+        // req.logger.info(result, 'POST /host/approveUserRequest');
         next();
       })
       .catch(error => {
-        req.logger.error(error, 'POST /host/approveUserRequest');
+        // req.logger.error(error, 'POST /host/approveUserRequest');
         next();
       });
   } else {
@@ -147,11 +147,11 @@ function sendEmail (req, res, next) {
   return req.mailer.bulkSimpleMail(mails)
     .then(function (results) {
       req.$scope.sentMails = results;
-      req.logger.info(results, 'POST /host/approveUserRequest');
+      // req.logger.info(results, 'POST /host/approveUserRequest');
       next();
     })
     .catch(function (error) {
-      req.logger.error(error, 'POST /host/approveUserRequest');
+      // req.logger.error(error, 'POST /host/approveUserRequest');
       next();
     });
 }

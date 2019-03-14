@@ -124,12 +124,12 @@ function checkDuplicateOrg (req, res, next) {
   return req.DB.Organization.findWithNameOrEmail(req.body.orgName, req.body.orgEmail)
     .then(function (org) {
       if (org) {
-        req.logger.warn('POST /api/clients', {
-          status: 'ERROR',
-          statusCode: 2,
-          httpCode: 400,
-          message: 'Invalid Parameter: Organization Name or Email - Already In Use'
-        });
+        // req.logger.warn('POST /api/clients', {
+        //   status: 'ERROR',
+        //   statusCode: 2,
+        //   httpCode: 400,
+        //   message: 'Invalid Parameter: Organization Name or Email - Already In Use'
+        // });
         return res.status(400).send({
           status: 'ERROR',
           statusCode: 2,
@@ -139,7 +139,7 @@ function checkDuplicateOrg (req, res, next) {
       }
       return next();
     }).catch(function (err) {
-      req.logger.error('POST /api/clients', err);
+      // req.logger.error('POST /api/clients', err);
       const errorObject = lib.errorResponses.internalServerError('Failed in Finding Organization = require(Database');
       return res.status(errorObject.httpCode).send(errorObject);
     });
@@ -150,12 +150,12 @@ function checkDuplicateClient (req, res, next) {
     $or: [{email: req.body.email}]
   }).then(function (client) {
     if (client) {
-      req.logger.warn('POST /api/clients', {
-        status: 'ERROR',
-        statusCode: 2,
-        httpCode: 400,
-        message: 'Invalid Parameter: Email - Already In Use'
-      });
+      // req.logger.warn('POST /api/clients', {
+      //   status: 'ERROR',
+      //   statusCode: 2,
+      //   httpCode: 400,
+      //   message: 'Invalid Parameter: Email - Already In Use'
+      // });
       return res.status(400).send({
         status: 'ERROR',
         statusCode: 2,
@@ -165,7 +165,7 @@ function checkDuplicateClient (req, res, next) {
     }
     return next();
   }).catch(function (err) {
-    req.logger.error('POST /api/clients', err);
+    // req.logger.error('POST /api/clients', err);
     const errorObject = lib.errorResponses.internalServerError('Failed in Finding Client = require(Database');
     return res.status(errorObject.httpCode).send(errorObject);
   });
@@ -206,7 +206,7 @@ function saveOrgToDb (req, res, next) {
       return next();
     })
     .catch(function (err) {
-      req.logger.error('POST /api/clients', err);
+      // req.logger.error('POST /api/clients', err);
       const errorObject = lib.errorResponses.internalServerError('Failed in Saving Organization to Database');
       return res.status(errorObject.httpCode).send(errorObject);
     });
@@ -223,7 +223,7 @@ function saveClientToDb (req, res, next) {
       return next();
     })
     .catch(function (err) {
-      req.logger.error('POST /api/clients', err);
+      // req.logger.error('POST /api/clients', err);
       const errorObject = lib.errorResponses.internalServerError('Failed in Saving Client to Database');
       return res.status(errorObject.httpCode).send(errorObject);
     });
@@ -236,21 +236,21 @@ function sendInitialEmail (req, res, next) {
   return req.mailer
     .simpleMail('REPORTAPITEAM@NOREPLY', client.email, 'REGISTRATION SUCCESS', initialMail)
     .then(function (messageResponse) {
-      req.logger.info('POST /api/clients', {for: 'SendEmail', messageResponse});
+      // req.logger.info('POST /api/clients', {for: 'SendEmail', messageResponse});
       return next();
     })
     .catch(function (err) {
-      req.logger.error('POST /api/clients', err);
+      // req.logger.error('POST /api/clients', err);
       const errorObject = lib.errorResponses.internalServerError('Failed in Sending Email to Client');
       return res.status(errorObject.httpCode).send(errorObject);
     });
 }
 
 function respond (req, res) {
-  req.logger.info('POST /api/clients', {
-    clientID: req.$scope.newClient._id,
-    apiKey: req.$scope.newClient.apiKey
-  });
+  // req.logger.info('POST /api/clients', {
+  //   clientID: req.$scope.newClient._id,
+  //   apiKey: req.$scope.newClient.apiKey
+  // });
   res.status(201).send({
     status: 'SUCCESS',
     statusCode: 0,

@@ -9,7 +9,7 @@ function validateParams (req, res, next) {
       httpCode: 400,
       message: 'Invalid Parameter: Reporter ID'
     };
-    req.logger.warn(error, 'GET /api/reporters/:reporterId');
+    // req.logger.warn(error, 'GET /api/reporters/:reporterId');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -23,7 +23,7 @@ function logic (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'PUT /api/reports/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -34,7 +34,7 @@ function logic (req, res, next) {
 }
 
 function respond (req, res) {
-  req.logger.info(req.$scope.reporter ? req.$scope.reporter.toObject() : null, 'PUT /api/reporters/:reporterId');
+  // req.logger.info(req.$scope.reporter ? req.$scope.reporter.toObject() : null, 'PUT /api/reporters/:reporterId');
   res.status(200).send({
     status: 'SUCCESS',
     statusCode: 0,

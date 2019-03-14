@@ -1,6 +1,6 @@
 const internals = {};
 internals.serverError = function (err, req, res) {
-  req.logger.error(err, 'GET /api/hosts/search/:searchString');
+  // req.logger.error(err, 'GET /api/hosts/search/:searchString');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -18,7 +18,7 @@ function validateParams (req, res, next) {
       httpCode: 400,
       message: 'Missing Parameters: Search String'
     };
-    req.logger.warn(error, 'GET /api/hosts/search/:searchString');
+    // req.logger.warn(error, 'GET /api/hosts/search/:searchString');
     return res.status(error.httpCode).send(error);
   }
   next();

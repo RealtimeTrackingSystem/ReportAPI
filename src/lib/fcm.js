@@ -1,7 +1,7 @@
 const fcm = require('fcm-notification');
 const path = require('path');
 var FCM = new fcm(path.resolve(__dirname, '../..', 'firebase-service-account.json'));
-
+// let FCM = new fcm(process.env.FCM_API_KEY);
 const Promise = require('bluebird');
 
 

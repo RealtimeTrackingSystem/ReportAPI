@@ -7,7 +7,7 @@ function routes (app) {
       httpCode: 200,
       message: 'REPORT API is online!'
     };
-    req.logger.info('GET /echo', success);
+    // req.logger.info('GET /echo', success);
     res.status(200).send(success);
   });
   app.use(require('./report.route'));
@@ -24,7 +24,7 @@ function routes (app) {
       httpCode: 404,
       message: message
     };
-    req.logger.warn(path, error);
+    // req.logger.warn(path, error);
     res.status(404).send(error);
   });
 }

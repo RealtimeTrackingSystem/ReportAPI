@@ -49,7 +49,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'PUT /api/reports/status/:reportId');
+    // req.logger.warn(errorObject, 'PUT /api/reports/status/:reportId');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -69,7 +69,7 @@ function checkReport (req, res, next) {
           httpCode: 400,
           message: 'Invalid Parameter: Report ID - Not Existing'
         };
-        req.logger.warn(error, 'PUT /api/reports/status/:reportId');
+        // req.logger.warn(error, 'PUT /api/reports/status/:reportId');
         return res.status(error.statusCode).send(error);
       }
       req.$scope.reporter = report._reporter;
@@ -82,7 +82,7 @@ function checkReport (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -104,7 +104,7 @@ function validateStatus (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -126,7 +126,7 @@ function addNote (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -150,7 +150,7 @@ function logic (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -171,7 +171,7 @@ function updateDuplicates (req, res, next) {
   }));
   return Promise.map(dups, internals.updateIterator)
     .then(results => {
-      req.logger.info(results);
+      // req.logger.info(results);
       req.$scope.duplicates = results.reduce((acu, cur) => {
         if (cur._id) {
           return acu.concat([cur]);
@@ -184,7 +184,7 @@ function updateDuplicates (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/status/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -222,11 +222,11 @@ function sendEmail (req, res, next) {
   return req.mailer.bulkSimpleMail(mails.concat(duplicateReporterMail).concat(duplicateHostMail))
     .then(function (results) {
       req.$scope.sentMails = results;
-      req.logger.info(results, 'PUT /api/reports/status/:reportId');
+      // req.logger.info(results, 'PUT /api/reports/status/:reportId');
       next();
     })
     .catch(function (error) {
-      req.logger.error(error, 'PUT /api/reports/status/:reportId');
+      // req.logger.error(error, 'PUT /api/reports/status/:reportId');
       next();
     });
 }
@@ -276,7 +276,7 @@ function sendNotification (req, res, next) {
       tokens.concat(dupTokens);
     }
     catch (e) {
-      req.logger.warn(e, 'PUT /api/reports/status/:reportId');
+      // req.logger.warn(e, 'PUT /api/reports/status/:reportId');
     }
   }
 
@@ -292,11 +292,11 @@ function sendNotification (req, res, next) {
   if (tokens.length > 0) {
     return req.FCM.sendToMultipleTokenAsync(message, tokens)
       .then(result => {
-        req.logger.info(result, 'PUT /api/reports/status/:reportId');
+        // req.logger.info(result, 'PUT /api/reports/status/:reportId');
         next();
       })
       .catch(error => {
-        req.logger.error(error, 'PUT /api/reports/status/:reportId');
+        // req.logger.error(error, 'PUT /api/reports/status/:reportId');
         next();
       });
   } else {

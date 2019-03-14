@@ -4,7 +4,7 @@ const ALLOWED_RESOURCES = ['reporter', 'host', 'people', 'properties', 'medias']
 const internals = {};
 
 internals.serverError = function (err, req, res) {
-  req.logger.error(err, 'GET /api/reports/search/:searchString');
+  // req.logger.error(err, 'GET /api/reports/search/:searchString');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -32,7 +32,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/reports', errorObject);
+    // req.logger.warn('GET /api/reports', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -48,7 +48,7 @@ function validateParams (req, res, next) {
       httpCode: 400,
       message: 'Missing Parameters: Search String'
     };
-    req.logger.warn(error, 'GET /api/reports/search/:searchString');
+    // req.logger.warn(error, 'GET /api/reports/search/:searchString');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -71,7 +71,7 @@ function getReports (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports/search/:searchString');
+      // req.logger.error(err, 'GET /api/reports/search/:searchString');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -119,7 +119,7 @@ function getReportCount (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports/search/:searchString');
+      // req.logger.error(err, 'GET /api/reports/search/:searchString');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -139,7 +139,7 @@ function respond (req, res) {
     reports: reports,
     count: req.$scope.reportCount
   };
-  req.logger.info(result, 'GET /api/reports/search/:searchString');
+  // req.logger.info(result, 'GET /api/reports/search/:searchString');
   res.status(result.httpCode).send(result);
 }
 

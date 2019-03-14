@@ -98,7 +98,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/reports');
+    // req.logger.warn(errorObject, 'POST /api/reports');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -136,7 +136,7 @@ function checkCategory (req, res, next) {
   }
 
   if (error) {
-    req.logger.warn(error, 'POST /api/reports');
+    // req.logger.warn(error, 'POST /api/reports');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -172,7 +172,7 @@ function checkDuplicate (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -190,13 +190,13 @@ function validateHost (req, res, next) {
     message: 'Invalid Parameter: Host ID'
   };
   if (!validId) {
-    req.logger.warn(error, 'POST /api/reports');
+    // req.logger.warn(error, 'POST /api/reports');
     return res.status(error.httpCode).send(error);
   }
   return req.DB.Host.findById(hostId)
     .then(function (host) {
       if (!host) {
-        req.logger.warn(error, 'POST /api/reports');
+        // req.logger.warn(error, 'POST /api/reports');
         return res.status(error.httpCode).send(error);
       }
       req.$scope.host = host;
@@ -204,7 +204,7 @@ function validateHost (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -219,13 +219,13 @@ function validateReporter (req, res, next) {
     message: 'Invalid Parameter: Reporter ID'
   };
   if (!validId) {
-    req.logger.warn(error, 'POST /api/reports');
+    // req.logger.warn(error, 'POST /api/reports');
     return res.status(error.httpCode).send(error);
   }
   return req.DB.Reporter.findById(reporterId)
     .then(function (reporter) {
       if (!reporter) {
-        req.logger.warn(error, 'POST /api/reports');
+        // req.logger.warn(error, 'POST /api/reports');
         return res.status(error.httpCode).send(error);
       }
       req.$scope.reporter = reporter;
@@ -233,7 +233,7 @@ function validateReporter (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -291,7 +291,7 @@ function savePeopleToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -326,7 +326,7 @@ function savePropertiesToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -359,7 +359,7 @@ function saveMediasToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -373,7 +373,7 @@ function saveReportToDB (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internal Server Error');
-      req.logger.error('POST /api/reports', error);
+      // req.logger.error('POST /api/reports', error);
       res.status(500).send(err);
     });
 }
@@ -387,7 +387,7 @@ function saveReportToClientReport (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       res.status(500).send(err);
     });
 }
@@ -406,11 +406,11 @@ function sendEmail (req, res, next) {
   return req.mailer.bulkSimpleMail(mails)
     .then(function (results) {
       req.$scope.sentMails = results;
-      req.logger.info(results, 'POST /api/reports');
+      // req.logger.info(results, 'POST /api/reports');
       next();
     })
     .catch(function (error) {
-      req.logger.error(error, 'POST /api/reports');
+      // req.logger.error(error, 'POST /api/reports');
       next();
     });
 }
@@ -422,7 +422,7 @@ function respond (req, res) {
     httpCode: 201,
     report: req.$scope.newReport._id
   };
-  req.logger.info(success, 'POST /api/reports');
+  // req.logger.info(success, 'POST /api/reports');
   res.status(201).send(success);
 }
 
