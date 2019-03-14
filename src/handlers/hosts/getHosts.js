@@ -2,7 +2,7 @@ const lib = require('../../lib');
 
 const internals = {};
 internals.serverError = function (err, req, res) {
-  req.logger.error(err, 'GET /api/hosts');
+  // req.logger.error(err, 'GET /api/hosts');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -48,7 +48,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/reports', errorObject);
+    // req.logger.warn('GET /api/reports', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -120,7 +120,7 @@ function respond (req, res) {
     hosts: req.$scope.hosts,
     count: req.$scope.hostCount
   };
-  req.logger.info(success, 'GET /api/hosts');
+  // req.logger.info(success, 'GET /api/hosts');
   res.status(success.httpCode).send(success);
 }
 

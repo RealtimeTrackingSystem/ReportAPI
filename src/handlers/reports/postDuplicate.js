@@ -33,7 +33,7 @@ function validateParams (req, res, next) {
     error.message = 'Invalid Parameter: Duplicates';
   }
   if (error.statusCode) {
-    req.logger.warn(error, 'POST /api/reports/duplicates');
+    // req.logger.warn(error, 'POST /api/reports/duplicates');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -47,9 +47,9 @@ function duplicate (req, res, next) {
     const duplicate = duplicates[0];
     return req.DB.Report.duplicateReport(duplicate.originalReport, duplicate.duplicateReport)
       .spread((originalReport, duplicateReport) => {
-        req.logger.info({
-          originalReport, duplicateReport
-        }, 'POST /api/reports/duplicates');
+        // req.logger.info({
+        //   originalReport, duplicateReport
+        // }, 'POST /api/reports/duplicates');
         next();
       })
       .catch((err) => {
@@ -61,16 +61,16 @@ function duplicate (req, res, next) {
             httpCode : 400,
             message: err.reason
           };
-          req.logger.warn(response, 'POST /api/reports/duplicates');
+          // req.logger.warn(response, 'POST /api/reports/duplicates');
         } else if (err.success) {
           response = {
             status: 'SUCCESS',
             statusCode: 0,
             httpCode: 201
           };
-          req.logger.info(response, 'POST /api/reports/duplicates');
+          // req.logger.info(response, 'POST /api/reports/duplicates');
         } else {
-          req.logger.error(err, 'POST /api/reports/duplicates');
+          // req.logger.error(err, 'POST /api/reports/duplicates');
           response = {
             status: 'ERROR',
             statusCode: 1,
@@ -84,13 +84,13 @@ function duplicate (req, res, next) {
     req.$scope.massDuplication = true;
     return Promise.map(duplicates, internals.duplicateReportIterator)
       .then((results) => {
-        req.logger.info({
-          results
-        }, 'POST /api/reports/duplicates');
+        // req.logger.info({
+        //   results
+        // }, 'POST /api/reports/duplicates');
         next();
       })
       .catch((err) => {
-        req.logger.error(err, 'POST /api/reports/duplicates');
+        // req.logger.error(err, 'POST /api/reports/duplicates');
         res.status(500).send({
           status: 'ERROR',
           statusCode: 1,

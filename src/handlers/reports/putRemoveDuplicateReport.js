@@ -13,7 +13,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'PUT /api/reports/duplicates');
+    // req.logger.warn(errorObject, 'PUT /api/reports/duplicates');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -34,7 +34,7 @@ function validateReportId (req, res, next) {
   }
 
   if (error) {
-    req.logger.warn(error, 'PUT /api/reports/duplicates');
+    // req.logger.warn(error, 'PUT /api/reports/duplicates');
     return res.status(error.httpCode).send(error);
   }
 
@@ -50,13 +50,13 @@ function logic (req, res) {
         statusCode: 0,
         httpCode: 201
       };
-      req.logger.info(result, 'PUT /api/reports/duplicates');
+      // req.logger.info(result, 'PUT /api/reports/duplicates');
       res.status(response.httpCode).send(response);
     })
     .catch(err => {
       let error;
       if (err.message) {
-        req.logger.warn(err, 'PUT /api/reports/duplicates');
+        // req.logger.warn(err, 'PUT /api/reports/duplicates');
         error = {
           status: 'ERROR',
           statusCode: 3,
@@ -64,7 +64,7 @@ function logic (req, res) {
           message: err.message
         };
       } else {
-        req.logger.error(err, 'PUT /api/reports/duplicates');
+        // req.logger.error(err, 'PUT /api/reports/duplicates');
         error = {
           status: 'ERROR',
           statusCode: 1,

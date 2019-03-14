@@ -101,7 +101,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/reporters');
+    // req.logger.warn(errorObject, 'POST /api/reporters');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -131,7 +131,7 @@ function logic (req, res, next) {
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reporters');
+      // req.logger.error(error, 'POST /api/reporters');
       res.status(500).send(err);
     });
 }
@@ -144,7 +144,7 @@ function respond (req, res) {
     httpCode: 201,
     reporter: reporter
   };
-  req.logger.info(response, 'POST /api/reporters');
+  // req.logger.info(response, 'POST /api/reporters');
   res.status(201).send(response);
 }
 

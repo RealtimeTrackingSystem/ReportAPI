@@ -8,7 +8,7 @@ function authenticate (req, res, next) {
     message: 'Unauthorized'
   };
   if (!req.headers['api-key']) {
-    req.logger.warn(err, 'Client-Authentication');
+    // req.logger.warn(err, 'Client-Authentication');
     return res.status(401).send(err);
   }
   return req.DB.Client.findOne({
@@ -16,7 +16,7 @@ function authenticate (req, res, next) {
   })
     .then(function (client) {
       if (!client) {
-        req.logger.warn(err, 'Client-Authentication');
+        // req.logger.warn(err, 'Client-Authentication');
         return res.status(401).send(err);
       }
       client = client.toObject();
@@ -26,7 +26,7 @@ function authenticate (req, res, next) {
       return next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'Client-Authentication');
+      // req.logger.error(err, 'Client-Authentication');
       const error = lib.errorResponses.internalServerError('Internal Server Error');
       return res.status(500).send(error);
     });
@@ -36,11 +36,11 @@ function logActivity (req, res, next) {
   const client = req.$scope.clientCredentials;
   const requestMethod = req.method;
   const requestPath = req.path;
-  req.logger.info({
-    client,
-    requestMethod,
-    requestPath
-  }, 'Logging Activity -- ' + new Date());
+  // req.logger.info({
+  //   client,
+  //   requestMethod,
+  //   requestPath
+  // }, 'Logging Activity -- ' + new Date());
   next();
 }
 

@@ -9,7 +9,7 @@ internals.catchError = (err, req, res) => {
     httpCode: 500,
     message: 'Internal Server Error'
   };
-  req.logger.error(err, 'POST /api/reporters/firebaseToken');
+  // req.logger.error(err, 'POST /api/reporters/firebaseToken');
   res.status(error.httpCode).send(error);
 };
 
@@ -33,7 +33,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('POST /api/reporters/firebaseToken', errorObject);
+    // req.logger.warn('POST /api/reporters/firebaseToken', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();

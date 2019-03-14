@@ -61,7 +61,7 @@ function validateParams (req, res, next) {
   }
 
   if (error) {
-    req.logger.warn(error, 'POST /api/v1/reports/mass-update-status');
+    // req.logger.warn(error, 'POST /api/v1/reports/mass-update-status');
     return res.status(error.httpCode).send(error);
   }
   next();
@@ -92,7 +92,7 @@ function checkReportsToUpdate (req, res, next) {
       next();
     })
     .catch(err => {
-      req.logger.error(err, 'POST /api/v1/reports/mass-update-status');
+      // req.logger.error(err, 'POST /api/v1/reports/mass-update-status');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -116,7 +116,7 @@ function logic (req, res, next) {
       next();
     })
     .catch(err => {
-      req.logger.error(err, 'POST /api/v1/reports/mass-update-status');
+      // req.logger.error(err, 'POST /api/v1/reports/mass-update-status');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -134,7 +134,7 @@ function respond (req, res) {
     httpCode: 201,
     result: updatedReports
   };
-  req.logger.info(response, 'POST /api/v1/reports/mass-update-status');
+  // req.logger.info(response, 'POST /api/v1/reports/mass-update-status');
   res.status(response.httpCode).send(response);
 }
 

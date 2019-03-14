@@ -5,7 +5,7 @@ const Transaction = require('mongoose-transactions');
 const internals = {};
 
 internals.catchError = (err, req, res) => {
-  req.logger.error(err, 'POST /api/reports/summons');
+  // req.logger.error(err, 'POST /api/reports/summons');
   res.status(500).send({
     status: 'ERROR',
     statusCode: 1,
@@ -25,7 +25,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('POST /api/people/summons', errorObject);
+    // req.logger.warn('POST /api/people/summons', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -74,7 +74,7 @@ function respond (req, res) {
     statusCode: 0,
     httpCode: 201
   };
-  req.logger.info(response, 'POST /api/people/summons');
+  // req.logger.info(response, 'POST /api/people/summons');
   res.status(response.httpCode).send(response);
 }
 

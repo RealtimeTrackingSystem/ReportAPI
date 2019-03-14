@@ -30,7 +30,7 @@ function logic (req, res, next) {
     })
     .catch(err => {
       const error = lib.errorResponses.internalServerError('Internal Server Error');
-      req.logger.error(err, 'GET /api/reports/duplicates');
+      // req.logger.error(err, 'GET /api/reports/duplicates');
       res.status(error.httpCode).send(error);
     });
 }
@@ -42,7 +42,7 @@ function respond (req, res) {
     httpCode: 200,
     reports: req.$scope.reports || []
   };
-  req.logger.info(response, 'GET /api/reports/duplicates');
+  // req.logger.info(response, 'GET /api/reports/duplicates');
   res.status(response.httpCode).send(response);
 }
 
