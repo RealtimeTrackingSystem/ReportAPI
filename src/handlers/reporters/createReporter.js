@@ -1,4 +1,5 @@
 const lib = require('../../lib');
+const moment = require('moment');
 
 function validateBody (req, res, next) {
   const schema = {
@@ -18,19 +19,32 @@ function validateBody (req, res, next) {
         errorMessage: 'Invalid Parameter Length: Last Name'
       }
     },
+    email: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Email',
+      isLength: {
+        options: { min: 2, max: 50 },
+        errorMessage: 'Invalid Parameter Length: Email'
+      }
+    },
+    gender: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Gender',
+      isLength: {
+        options: { min: 1, max: 50 },
+        errorMessage: 'Invalid Parameter Length: Gender'
+      }
+    },
     alias: {
       optional: true,
       isLength: {
-        options: { min: 4, max: 50 },
+        options: { min: 2, max: 50 },
         errorMessage: 'Invalid Parameter Length: Alias'
       }
     },
-    age: {
-      optional: true,
-      isNumber: {
-        options: { min: 0 },
-        errorMessage: 'Invalid Parameter: Age'
-      }
+    birthday: {
+      notEmpty: true,
+      errorMessage: 'Missing Parameter: Birthday'
     },
     street: {
       notEmpty: true,
@@ -87,7 +101,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/reporters');
+    // req.logger.warn(errorObject, 'POST /api/reporters');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -95,26 +109,29 @@ function validateBody (req, res, next) {
 }
 
 function logic (req, res, next) {
-  const reporter = {
-    fname: req.body.fname,
-    lname: req.body.lname,
-    alias: req.body.alias,
-    age: req.body.age,
-    street: req.body.street,
-    barangay: req.body.barangay,
-    city: req.body.city,
-    region: req.body.region,
-    country: req.body.country,
-    zip: req.body.zip
+  const reporter = req.body;
+  const reporterData = {
+    fname: reporter.fname,
+    lname: reporter.lname,
+    email: reporter.email,
+    birthday: moment(reporter.birthday, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+    gender: reporter.gender,
+    alias: reporter.alias,
+    street: reporter.street,
+    barangay: reporter.barangay,
+    city: reporter.city,
+    region: reporter.region,
+    country: reporter.country,
+    zip: reporter.zip
   };
-  return req.DB.Reporter.add(reporter)
-    .then(function (reporter) {
-      req.$scope.reporter = reporter;
+  return req.DB.Reporter.add(reporterData)
+    .then(function (r) {
+      req.$scope.reporter = r;
       next();
     })
     .catch(function (error) {
       const err = lib.errorResponses.internalServerError('Internale Server Error');
-      req.logger.error(error, 'POST /api/reporters');
+      // req.logger.error(error, 'POST /api/reporters');
       res.status(500).send(err);
     });
 }
@@ -127,7 +144,7 @@ function respond (req, res) {
     httpCode: 201,
     reporter: reporter
   };
-  req.logger.info(response, 'POST /api/reporters');
+  // req.logger.info(response, 'POST /api/reporters');
   res.status(201).send(response);
 }
 

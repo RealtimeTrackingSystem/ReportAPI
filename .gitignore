@@ -3,3 +3,7 @@
 /.nyc_output
 .env
 *.log
+service-account.json
+private-key.json
+firebase-service-account.json
+secrets.tar

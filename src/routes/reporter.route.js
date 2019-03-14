@@ -5,23 +5,43 @@
 const { Router } = require('express');
 const handlers = require('../handlers');
 
-const reportRoute = Router();
+const reporterRoute = Router();
 
-reportRoute.get('/api/reporters/:reporterId',
+reporterRoute.post('/api/reporters/firebase',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reporters.addUpdateFirebaseToken.validateBody,
+  handlers.reporters.addUpdateFirebaseToken.validateReporter,
+  handlers.reporters.addUpdateFirebaseToken.logic);
+
+reporterRoute.get('/api/reporters/:reporterId',
   handlers.authentication.clientAuth.authenticate,
   handlers.reporters.getReporterById.validateParams,
   handlers.reporters.getReporterById.logic,
   handlers.reporters.getReporterById.respond);
 
-reportRoute.get('/api/reporters',
+reporterRoute.get('/api/reporters',
   handlers.authentication.clientAuth.authenticate,
   handlers.reporters.getReporters.validateQuery,
   handlers.reporters.getReporters.logic);
 
-reportRoute.post('/api/reporters',
+reporterRoute.post('/api/reporters',
   handlers.authentication.clientAuth.authenticate,
   handlers.reporters.createReporter.validateBody,
   handlers.reporters.createReporter.logic,
   handlers.reporters.createReporter.respond);
 
-module.exports = reportRoute;
+reporterRoute.put('/api/reporters/:reporterId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reporters.createReporter.validateBody,
+  handlers.reporters.updateReporter.validateReporter,
+  handlers.reporters.updateReporter.logic,
+  handlers.reporters.updateReporter.respond);
+
+reporterRoute.put('/api/reporters/profilepic/:reporterId',
+  handlers.authentication.clientAuth.authenticate,
+  handlers.reporters.updateReporterProfilePic.validateParams,
+  handlers.reporters.updateReporterProfilePic.validateReporter,
+  handlers.reporters.updateReporterProfilePic.logic,
+  handlers.reporters.updateReporterProfilePic.respond);
+
+module.exports = reporterRoute;

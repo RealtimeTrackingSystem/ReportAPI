@@ -7,6 +7,9 @@ const Property = require('./Property');
 const Report = require('./Report');
 const Reporter = require('./Reporter');
 const Host = require('./Host');
+const Picture = require('./Picture');
+const Attachment = require('./Attachment');
+const Note = require('./Note');
 
 module.exports = {
   Client,
@@ -17,5 +20,12 @@ module.exports = {
   Property,
   Report,
   Reporter,
-  Host
+  Host,
+  Picture,
+  Attachment,
+  Note,
+  Clearance: require('./Clearance'),
+  MediationNote: require('./MediationNote'),
+  Summon: require('./Summon'),
+  FileAction: require('./FileAction')
 };

@@ -109,7 +109,7 @@ function validateBody (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn(errorObject, 'POST /api/hosts');
+    // req.logger.warn(errorObject, 'POST /api/hosts');
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -117,11 +117,10 @@ function validateBody (req, res, next) {
 }
 
 function checkDuplicates (req, res, next) {
-  const { name, email } = req.body;
+  const { email } = req.body;
   return req.DB.Host.findOne()
     .or([
-      { email: email },
-      { name: name }
+      { email: email }
     ])
     .then(function (host) {
       if (host) {
@@ -129,15 +128,15 @@ function checkDuplicates (req, res, next) {
           status: 'ERROR',
           statusCode: 2,
           httpCode: 400,
-          message: 'Invalid Resource: Host [ Email or Name ] Already Exists'
+          message: 'Invalid Resource: Host [ Email ] Already Exists'
         };
-        req.logger.warn(error, 'POST /api/hosts');
+        // req.logger.warn(error, 'POST /api/hosts');
         return res.status(error.httpCode).send(error);
       }
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'POST /api/hosts');
+      // req.logger.error(err, 'POST /api/hosts');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -148,6 +147,7 @@ function checkDuplicates (req, res, next) {
 }
 
 function logic (req, res, next) {
+  const client = req.$scope.clientCredentials;
   const host = {
     name: req.body.name,
     email: req.body.email,
@@ -162,7 +162,8 @@ function logic (req, res, next) {
     city: req.body.city,
     region: req.body.region,
     country: req.body.country,
-    zip: req.body.zip
+    zip: req.body.zip,
+    _client: client._id
   };
   return req.DB.Host.add(host)
     .then(function (host) {
@@ -170,7 +171,7 @@ function logic (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'POST /api/hosts');
+      // req.logger.error(err, 'POST /api/hosts');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -188,7 +189,7 @@ function respond (req, res) {
     httpCode: 201,
     host: host
   };
-  req.logger.info(response, 'POST /api/hosts');
+  // req.logger.info(response, 'POST /api/hosts');
   res.status(201).send(response);
 }
 

@@ -7,13 +7,14 @@ function routes (app) {
       httpCode: 200,
       message: 'REPORT API is online!'
     };
-    req.logger.info('GET /echo', success);
+    // req.logger.info('GET /echo', success);
     res.status(200).send(success);
   });
   app.use(require('./report.route'));
   app.use(require('./client.route'));
   app.use(require('./host.route'));
   app.use(require('./reporter.route'));
+  app.use(require('./people.route'));
   app.use('*', function (req, res){
     const path = req.params['0'];
     const message = `${path} is not a valid path`;
@@ -23,7 +24,7 @@ function routes (app) {
       httpCode: 404,
       message: message
     };
-    req.logger.warn(path, error);
+    // req.logger.warn(path, error);
     res.status(404).send(error);
   });
 }

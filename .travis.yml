@@ -7,6 +7,20 @@ env:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
+  - openssl aes-256-cbc -K $encrypted_a68d1c9e356b_key -iv $encrypted_a68d1c9e356b_iv -in secrets.tar.enc -out secrets.tar -d
+  - tar xvf secrets.tar
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project rcrts-224104
+  - gcloud config set compute/zone asia-southeast1-a
+  - gcloud container clusters get-credentials rcrts-multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t johnhigginsavila/report-api-test -f Dockerfile.dev .
+  - docker build -t johnhigginsavila/report-api:latest -t johnhigginsavila/report-api:$SHA -f ./Dockerfile .
+  - docker push johnhigginsavila/report-api:latest
+  - docker push johnhigginsavila/report-api:$SHA
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t johnhigginsavila/report-api-test -f Dockerfile.dev .
 script:

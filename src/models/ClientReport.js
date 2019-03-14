@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 const { Types } = Schema;
 
 const ClientReportSchema = new Schema({
-  _report: { type: Types.ObjectId, ref: 'Report' },
-  _client: { type: Types.ObjectId, ref: 'Client'}
+  _report: { type: Types.ObjectId, ref: 'Report', index: true  },
+  _client: { type: Types.ObjectId, ref: 'Client', index: true }
 }, { timestamps: true });
 
 ClientReportSchema.statics.add = function (clientReport) {

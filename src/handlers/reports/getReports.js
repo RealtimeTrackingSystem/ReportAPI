@@ -21,7 +21,7 @@ function validateQuery (req, res, next) {
   const validationErrors = req.validationErrors();
   if (validationErrors) {
     const errorObject = lib.errorResponses.validationError(validationErrors);
-    req.logger.warn('GET /api/reports', errorObject);
+    // req.logger.warn('GET /api/reports', errorObject);
     return res.status(errorObject.httpCode).send(errorObject);
   } else {
     return next();
@@ -43,8 +43,27 @@ function addTagsToWhereClause (req, res, next) {
   next();
 }
 
+function addOtherOptionsOnWhereClause (req, res, next) {
+  const where = req.$scope.whereClause || {};
+  if (req.query.reporter) {
+    where._reporter = req.query.reporter;
+  }
+
+  if (req.query.host) {
+    where._host = req.query.host;
+  }
+
+  if (req.query.isDuplicate != null ) {
+    where.isDuplicate = req.query.isDuplicate;
+  }
+
+
+  req.$scope.whereClause = where;
+  next();
+}
+
 function getReports (req, res, next) {
-  const limit = parseInt(req.query.limit) || 30;
+  const limit = parseInt(req.query.limit) || null;
   const page = parseInt(req.query.page) || 0;
   const where = req.$scope.whereClause || {};
   const resources
@@ -64,7 +83,7 @@ function getReports (req, res, next) {
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports');
+      // req.logger.error(err, 'GET /api/reports');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -76,13 +95,14 @@ function getReports (req, res, next) {
 
 function getReportCount (req, res, next) {
   const where = req.$scope.whereClause || {};
+  where.isDuplicate = false;
   return req.DB.Report.countDocuments(where)
     .then(function (count) {
       req.$scope.reportCount = count;
       next();
     })
     .catch(function (err) {
-      req.logger.error(err, 'GET /api/reports');
+      // req.logger.error(err, 'GET /api/reports');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -93,20 +113,23 @@ function getReportCount (req, res, next) {
 }
 
 function respond (req, res) {
+  const reports = req.$scope.reports;
+  
   const result = {
     status: 'SUCCESS',
     statusCode: 0,
     httpCode: 200,
-    reports: req.$scope.reports,
+    reports: reports,
     count: req.$scope.reportCount
   };
-  req.logger.info(result, 'GET /api/reports');
+  // req.logger.info(result, 'GET /api/reports');
   res.status(result.httpCode).send(result);
 }
 
 module.exports = {
   validateQuery,
   addTagsToWhereClause,
+  addOtherOptionsOnWhereClause,
   getReports,
   getReportCount,
   respond

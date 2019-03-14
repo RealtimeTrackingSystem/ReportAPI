@@ -9,7 +9,15 @@ spec:
   rules:
     - http:
         paths:
+          - path: /
+            backend:
+              serviceName: web-app-cluster-ip-service
+              servicePort: 4000
           - path: /report-api/
             backend:
               serviceName: report-api-cluster-ip-service
               servicePort: 5000
+          - path: /middleware-api/
+            backend:
+              serviceName: middleware-api-cluster-ip-service
+              servicePort: 3000

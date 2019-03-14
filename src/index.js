@@ -11,6 +11,7 @@ const logger = require('morgan');
 //   require('dotenv').load();
 // }
 
+
 const routes = require('./routes');
 const DB = require('./models');
 const CONFIG = require('./config');
@@ -61,11 +62,12 @@ app.use(validator({
 
 // adding req variables
 app.use(function (req, res, next) {
-  req.logger = {};
-  req.logger = lib.logger;
+  // req.logger = {};
+  // req.logger = lib.logger;
   req.mailer = lib.mailer;
   req.$scope = {};
   req.DB = DB;
+  req.FCM = lib.FCM;
   next();
 });
 

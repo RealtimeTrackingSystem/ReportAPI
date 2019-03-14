@@ -31,7 +31,14 @@ function queryBuilder (req, res, next) {
   }
 
   if (resources.indexOf('people') > -1) {
-    ReportQuery.populate('people');
+    ReportQuery.populate({
+      path: 'people',
+      model: 'Person',
+      populate: {
+        path: 'summons',
+        model: 'Summon'
+      }
+    });
   }
 
   if (resources.indexOf('properties') > -1) {
@@ -41,6 +48,22 @@ function queryBuilder (req, res, next) {
   if (resources.indexOf('medias') > -1) {
     ReportQuery.populate('medias');
   }
+
+  ReportQuery.populate('_category');
+  ReportQuery.populate('notes');
+  ReportQuery.populate('duplicates');
+  ReportQuery.populate('duplicateParent');
+
+  ReportQuery.populate({
+    path: 'mediationNotes',
+    model: 'MediationNote',
+    populate: {
+      path: '_media',
+      model: 'Attachment'
+    }
+  });
+
+  ReportQuery.populate('_fileAction');
 
   req.$scope.ReportQuery = ReportQuery;
   next();
@@ -56,7 +79,7 @@ function logic (req, res, next) {
       if (err.httpCode) {
         return res.status(err.httpCode).send(err);
       }
-      req.logger.error(err, 'PUT /api/reports/:reportId');
+      // req.logger.error(err, 'PUT /api/reports/:reportId');
       res.status(500).send({
         status: 'ERROR',
         statusCode: 1,
@@ -67,7 +90,7 @@ function logic (req, res, next) {
 }
 
 function respond (req, res) {
-  req.logger.info(req.$scope.report, 'PUT /api/reports/:reportId');
+  // req.logger.info(req.$scope.report, 'PUT /api/reports/:reportId');
   res.status(200).send({
     status: 'SUCCESS',
     statusCode: 0,
