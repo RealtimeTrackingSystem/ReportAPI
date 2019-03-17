@@ -1,8 +1,8 @@
 const CONFIG = {
   db: {
-    HOST: process.env.DB_HOST,
-    PORT: process.env.DB_PORT,
-    DATABASE: process.env.DATABASE,
+    HOST: process.env.DB_HOST || '127.0.0.1',
+    PORT: process.env.DB_PORT || '27017',
+    DATABASE: process.env.DATABASE || 'reportApiDb2',
     MONGO_INITDB_ROOT_USERNAME: process.env.MONGO_INITDB_ROOT_USERNAME,
     MONGO_INITDB_ROOT_PASSWORD: process.env.MONGO_INITDB_ROOT_PASSWORD
   },

@@ -1,0 +1,30 @@
+creating tar file for secrets: tar cvf secrets.tar service-account.json firebase-service-account.json
+
+
+travis encrypt-file secrets.tar -r RealtimeTrackingSystem/ReportAPI
+
+
+ON kubernetes google:
+
+set credentials:
+  - gcloud config set project rcrts-234803
+  - gcloud config set compute/zone asia-southeast1-a
+  - gcloud container clusters get-credentials multi-cluster
+
+set secrets:
+
+
+set-up helm:
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+set RBAC for tiller:
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+
+initialize helm:
+helm init --service-account tiller --upgrade
+
+install ingress:
+helm install stable/nginx-ingress --name my-nginx --set rbac.create=true
