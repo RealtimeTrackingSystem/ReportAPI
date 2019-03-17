@@ -16,9 +16,9 @@ const CONFIG = {
   SALT: 10,
   SECRET_KEY: 'thesupersecretkey',
   SENDGRID: {
-    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
-    SENDGRID_PASSWORD: process.env.SENDGRID_PASSWORD,
-    SENDGRID_USERNAME: process.env.SENDGRID_USERNAME
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || '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',
+    SENDGRID_PASSWORD: process.env.SENDGRID_PASSWORD || 'zlvmvall6181',
+    SENDGRID_USERNAME: process.env.SENDGRID_USERNAME || 'app113302926@heroku.com'
   }
 };
 
