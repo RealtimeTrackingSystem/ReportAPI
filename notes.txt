@@ -1,0 +1,4 @@
+creating tar file for secrets: tar cvf secrets.tar service-account.json firebase-service-account.json
+
+
+travis encrypt-file secrets.tar -r RealtimeTrackingSystem/ReportAPI

@@ -5,3 +5,5 @@
 *.log
 private-key.json
 secrets.tar
+firebase-service-account.json
+service-account.json
