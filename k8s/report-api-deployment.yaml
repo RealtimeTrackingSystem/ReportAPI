@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: report-api-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       component: report-api
