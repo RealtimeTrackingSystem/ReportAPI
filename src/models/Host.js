@@ -22,7 +22,7 @@ const HostSchema = new Schema({
   country: { type: String, index: true  },
   zip: { type: String, index: true  },
   profilePicture: { type: Types.ObjectId, ref: 'Picture', index: true  },
-  isApproved: { type: Boolean, index: true, default: false },
+  isApproved: { type: Boolean, index: true, default: true },
   _client: { type: Types.ObjectId, ref: 'Client', index: true, required: true }
 }, { timestamps: true });
 
